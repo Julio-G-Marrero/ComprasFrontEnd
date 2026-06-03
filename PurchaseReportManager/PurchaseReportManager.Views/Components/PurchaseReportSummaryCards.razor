@@ -1,0 +1,62 @@
+<div class="row g-3 mb-3">
+    <div class="col-sm">
+        <div class="card text-center h-100">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Total SKUs</p>
+                <p class="fs-4 fw-bold mb-0">@Vm.TotalSkus</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100 border-success">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">SKUs con compra sugerida</p>
+                <p class="fs-4 fw-bold text-success mb-0">@Vm.SkusConCompraSugerida</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100 border-primary">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Cantidad total sugerida</p>
+                <p class="fs-4 fw-bold text-primary mb-0">@Vm.CantidadTotalSugerida.ToString("N0")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100 border-danger">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Productos críticos</p>
+                <p class="fs-4 fw-bold text-danger mb-0">@Vm.ProductosCriticos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100 border-warning">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Productos a revisión</p>
+                <p class="fs-4 fw-bold text-warning mb-0">@Vm.ProductosRevision</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Ventas 45 días</p>
+                <p class="fs-4 fw-bold mb-0">@Vm.VentasTotales45Dias.ToString("N0")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card text-center h-100">
+            <div class="card-body py-2">
+                <p class="card-text text-muted small mb-1">Existencia efectiva</p>
+                <p class="fs-4 fw-bold mb-0">@Vm.TotalExistenciaEfectiva.ToString("N0")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+}

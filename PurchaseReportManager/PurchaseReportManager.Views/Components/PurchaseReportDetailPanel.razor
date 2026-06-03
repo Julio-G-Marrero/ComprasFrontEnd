@@ -1,0 +1,73 @@
+<div class="card h-100">
+    <div class="card-header d-flex justify-content-between align-items-center py-2">
+        <strong class="small">Detalle de producto</strong>
+        <button type="button" class="btn-close" @onclick="OnClose"></button>
+    </div>
+    <div class="card-body overflow-auto p-2" style="max-height:calc(100vh - 260px)">
+        @if (Item is not null)
+        {
+            <p class="fw-bold text-primary mb-0"><code>@Item.Sku</code></p>
+            <p class="text-muted small mb-3">@Item.Descripcion</p>
+
+            <p class="fw-semibold small text-uppercase text-muted mb-1">Clasificación</p>
+            @Row("Familia", Item.Familia)
+            @Row("SubFamilia", Item.SubFamilia)
+            @Row("ABC", Item.Abc)
+            @Row("XYZ", Item.Xyz)
+
+            <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Inventario y demanda</p>
+            @Row("Existencia efectiva", Item.ExistenciaEfectiva.ToString("N2"))
+            @Row("Ventas 45 días", Item.Ventas45Dias.ToString("N2"))
+            @Row("Demanda diaria", Item.DemandaDiaria.ToString("N4"))
+            @Row("Desviación estándar diaria", Item.DesviacionEstandarDiaria.ToString("N4"))
+            @Row("Coeficiente de variación", Item.CoeficienteVariacion.ToString("N4"))
+
+            <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Parámetros de reorden</p>
+            @Row("Días proveedor", Item.DiasProveedor.ToString("N0"))
+            @Row("Frecuencia revisión", Item.FrecuenciaRevision.ToString("N0"))
+            @Row("Periodo protección", Item.PeriodoProteccion.ToString("N2"))
+            @Row("Stock seguridad", Item.StockSeguridad.ToString("N2"))
+            @Row("Stock mínimo operativo", Item.StockMinimoOperativo.ToString("N2"))
+            @Row("ROP", Item.Rop.ToString("N2"))
+            @Row("Inv. objetivo rotación", Item.InventarioObjetivoRotacion.ToString("N2"))
+            @Row("Inv. objetivo final", Item.InventarioObjetivoFinal.ToString("N2"))
+
+            <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Compra sugerida</p>
+            @Row("Cantidad bruta", Item.CantidadBruta.ToString("N2"))
+            @Row("Cantidad por empaque", Item.CantidadPorEmpaque.ToString("N0"))
+            @Row("Paquetes sugeridos", Item.PaquetesSugeridos.ToString("N0"))
+            <div class="d-flex justify-content-between border-bottom py-1 small">
+                <span class="text-muted">Cantidad sugerida</span>
+                <span class="fw-bold text-primary">@Item.CantidadSugerida.ToString("N0")</span>
+            </div>
+            @Row("Motivo compra", Item.MotivoCompra)
+
+            <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Alertas</p>
+            @Row("Nivel alerta", Item.NivelAlerta)
+            @if (Item.RequiereRevision)
+            {
+                @Row("Motivo revisión", Item.MotivoRevision)
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public PurchaseReportLine? Item { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private static RenderFragment Row(string label, string value) => __builder =>
+    {
+        __builder.OpenElement(0, "div");
+        __builder.AddAttribute(1, "class", "d-flex justify-content-between border-bottom py-1 small");
+        __builder.OpenElement(2, "span");
+        __builder.AddAttribute(3, "class", "text-muted");
+        __builder.AddContent(4, label);
+        __builder.CloseElement();
+        __builder.OpenElement(5, "span");
+        __builder.AddAttribute(6, "class", "fw-semibold text-end");
+        __builder.AddContent(7, value);
+        __builder.CloseElement();
+        __builder.CloseElement();
+    };
+}

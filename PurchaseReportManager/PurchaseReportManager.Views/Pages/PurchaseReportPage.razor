@@ -1,0 +1,58 @@
+@page "/reporte-compras"
+@rendermode InteractiveServer
+@inject PurchaseReportViewModel Vm
+
+<PageTitle>Reporte de Compra Inteligente</PageTitle>
+
+<div class="container-fluid py-3">
+    <h2 class="mb-3">Reporte de Compra Inteligente</h2>
+
+    <PurchaseReportFilters Vm="Vm" OnLoad="HandleLoad" OnClearFilters="HandleClearFilters" OnFilterChanged="StateHasChanged" />
+
+    @if (Vm.IsLoading)
+    {
+        <div class="text-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2 text-muted">Generando reporte...</p>
+        </div>
+    }
+    else if (Vm.ErrorMessage is not null)
+    {
+        <div class="alert alert-danger mt-3">@Vm.ErrorMessage</div>
+    }
+    else if (Vm.Items.Count > 0)
+    {
+        <PurchaseReportSummaryCards Vm="Vm" />
+
+        <div class="row g-3 mt-1">
+            <div class="@(Vm.SelectedItem is not null ? "col-lg-8" : "col-12")">
+                <PurchaseReportTable Vm="Vm" OnRowClick="HandleRowClick" />
+            </div>
+            @if (Vm.SelectedItem is not null)
+            {
+                <div class="col-lg-4">
+                    <PurchaseReportDetailPanel Item="Vm.SelectedItem" OnClose="HandleCloseDetail" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private async Task HandleLoad()
+    {
+        await Vm.LoadAsync();
+        StateHasChanged();
+    }
+
+    private void HandleClearFilters()
+    {
+        Vm.ClearFilters();
+        StateHasChanged();
+    }
+
+    private void HandleRowClick(PurchaseReportLine item) => Vm.SelectItem(item);
+    private void HandleCloseDetail() => Vm.ClearSelection();
+}

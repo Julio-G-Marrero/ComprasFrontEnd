@@ -1,0 +1,52 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Tenant ID</label>
+                <input class="form-control" @bind="Vm.TenantId" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Familia <span class="text-danger">*</span></label>
+                <input class="form-control" @bind="Vm.Familia" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">SubFamilia</label>
+                <input class="form-control" @bind="Vm.SubFamilia" placeholder="Opcional" />
+            </div>
+            <div class="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkSugerida"
+                           @bind="Vm.SoloConCompraSugerida" @bind:after="NotifyChanged" />
+                    <label class="form-check-label" for="chkSugerida">Solo con compra sugerida</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkCriticos"
+                           @bind="Vm.SoloCriticos" @bind:after="NotifyChanged" />
+                    <label class="form-check-label" for="chkCriticos">Solo críticos</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkRevision"
+                           @bind="Vm.SoloRequiereRevision" @bind:after="NotifyChanged" />
+                    <label class="form-check-label" for="chkRevision">Solo requiere revisión</label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex flex-column gap-2">
+                <button class="btn btn-primary" @onclick="OnLoad" disabled="@Vm.IsLoading">
+                    Generar reporte
+                </button>
+                <button class="btn btn-outline-secondary" @onclick="OnClearFilters">
+                    Limpiar filtros
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public EventCallback OnLoad { get; set; }
+    [Parameter] public EventCallback OnClearFilters { get; set; }
+    [Parameter] public EventCallback OnFilterChanged { get; set; }
+
+    private async Task NotifyChanged() => await OnFilterChanged.InvokeAsync();
+}

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.Views\Common.Views.csproj" />
+    <ProjectReference Include="..\PurchaseReportManager\PurchaseReportManager.Views\PurchaseReportManager.Views.csproj" />
+    <ProjectReference Include="..\PurchaseReportManager\PurchaseReportManager.Proxy\PurchaseReportManager.Proxy.csproj" />
+    <ProjectReference Include="..\PurchaseReportManager\PurchaseReportManager.ViewModels\PurchaseReportManager.ViewModels.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+</Project>

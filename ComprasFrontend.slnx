@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Common/">
+    <Project Path="Common/Common.Views/Common.Views.csproj" />
+    <Project Path="Common/Domain/Domain.csproj" />
+  </Folder>
+  <Folder Name="/PurchaseReportManager/">
+    <Project Path="PurchaseReportManager/PurchaseReportManager.Proxy/PurchaseReportManager.Proxy.csproj" />
+    <Project Path="PurchaseReportManager/PurchaseReportManager.ViewModels/PurchaseReportManager.ViewModels.csproj" />
+    <Project Path="PurchaseReportManager/PurchaseReportManager.Views/PurchaseReportManager.Views.csproj" />
+  </Folder>
+  <Project Path="Web/Web.csproj" />
+</Solution>

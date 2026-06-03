@@ -1,0 +1,11 @@
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\bin\Debug\net10.0\Common.Views.deps.json
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\bin\Debug\net10.0\Common.Views.dll
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\bin\Debug\net10.0\Common.Views.pdb
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.AssemblyInfoInputs.cache
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.AssemblyInfo.cs
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.dll
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\refint\Common.Views.dll
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.pdb
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\ref\Common.Views.dll

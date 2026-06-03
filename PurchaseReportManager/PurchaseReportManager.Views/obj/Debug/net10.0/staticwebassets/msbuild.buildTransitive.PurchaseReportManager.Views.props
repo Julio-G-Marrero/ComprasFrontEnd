@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\PurchaseReportManager.Views.props" />
+</Project>

@@ -1,0 +1,72 @@
+@if (!Vm.FilteredItems.Any())
+{
+    <div class="text-center text-muted py-4 border rounded">Sin resultados con los filtros aplicados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-bordered align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>SKU</th>
+                    <th>Descripción</th>
+                    <th>SubFamilia</th>
+                    <th class="text-end">Req. Stock</th>
+                    <th class="text-end">Exist. Efect.</th>
+                    <th class="text-end">Ventas 45d</th>
+                    <th class="text-center">ABC</th>
+                    <th class="text-center">XYZ</th>
+                    <th class="text-end">Cant./Emp.</th>
+                    <th class="text-end">Paq. Sug.</th>
+                    <th class="text-end">Cant. Sug.</th>
+                    <th>Motivo Compra</th>
+                    <th class="text-center">Alerta</th>
+                    <th class="text-center">Rev.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Vm.FilteredItems)
+                {
+                    <tr class="@(Vm.SelectedItem == item ? "table-active" : "")"
+                        style="cursor:pointer"
+                        @onclick="() => OnRowClick.InvokeAsync(item)">
+                        <td><code class="text-nowrap">@item.Sku</code></td>
+                        <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@item.Descripcion">@item.Descripcion</td>
+                        <td>@item.SubFamilia</td>
+                        <td class="text-end">@item.RequeridoStock.ToString("N0")</td>
+                        <td class="text-end">@item.ExistenciaEfectiva.ToString("N0")</td>
+                        <td class="text-end">@item.Ventas45Dias.ToString("N0")</td>
+                        <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
+                        <td class="text-center"><span class="badge bg-secondary">@item.Xyz</span></td>
+                        <td class="text-end">@item.CantidadPorEmpaque.ToString("N0")</td>
+                        <td class="text-end">@item.PaquetesSugeridos.ToString("N0")</td>
+                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.CantidadSugerida.ToString("N0")</td>
+                        <td><small class="text-nowrap">@item.MotivoCompra</small></td>
+                        <td class="text-center">
+                            @if (!string.IsNullOrEmpty(item.NivelAlerta))
+                            {
+                                <span class="@AlertBadgeClass(item.NivelAlerta)">@item.NivelAlerta</span>
+                            }
+                        </td>
+                        <td class="text-center">@(item.RequiereRevision ? "✓" : "")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="text-muted small mt-1">@Vm.FilteredItems.Count ítem(s)</div>
+}
+
+@code {
+    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public EventCallback<PurchaseReportLine> OnRowClick { get; set; }
+
+    private static string AlertBadgeClass(string nivel) => nivel.ToUpperInvariant() switch
+    {
+        "CRITICO" => "badge bg-danger",
+        "ALTO"    => "badge bg-warning text-dark",
+        "MEDIO"   => "badge bg-info text-dark",
+        "BAJO"    => "badge bg-success",
+        _         => "badge bg-secondary"
+    };
+}
