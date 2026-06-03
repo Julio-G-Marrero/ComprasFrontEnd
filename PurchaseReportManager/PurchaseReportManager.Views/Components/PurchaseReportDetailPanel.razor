@@ -20,7 +20,7 @@
             @Row("Ventas 45 días", Item.Ventas45Dias.ToString("N2"))
             @Row("Demanda diaria", Item.DemandaDiaria.ToString("N4"))
             @Row("Desviación estándar diaria", Item.DesviacionEstandarDiaria.ToString("N4"))
-            @Row("Coeficiente de variación", Item.CoeficienteVariacion.ToString("N4"))
+            @Row("Coeficiente de variación", Item.CoeficienteVariacion.HasValue ? Item.CoeficienteVariacion.Value.ToString("N4") : "-")
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Parámetros de reorden</p>
             @Row("Días proveedor", Item.DiasProveedor.ToString("N0"))

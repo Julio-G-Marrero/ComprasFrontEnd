@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PurchaseReportManager.Proxy")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7cbe41d05c29442896296c94dd267cd362cf506b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4acd629d0786c74fdc9044c02288725f6e85eb93")]
 [assembly: System.Reflection.AssemblyProductAttribute("PurchaseReportManager.Proxy")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PurchaseReportManager.Proxy")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

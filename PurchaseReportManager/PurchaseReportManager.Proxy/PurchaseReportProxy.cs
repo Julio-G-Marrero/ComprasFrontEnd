@@ -16,18 +16,50 @@ internal sealed class PurchaseReportProxy(
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
     private readonly PurchaseReportProxyOptions _options = options.Value;
 
+    public async Task<IReadOnlyList<TenantOption>> GetTenantsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        using var response = await httpClient.GetAsync("/api/tenants", cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content
+            .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
+        return result?.AsReadOnly() ?? [];
+    }
+
+    public async Task<IReadOnlyList<string>> GetFamiliesAsync(
+        string tenantId,
+        CancellationToken cancellationToken = default)
+    {
+        using var request = TenantRequest(HttpMethod.Get, "/api/catalog/families", tenantId);
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content
+            .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
+        return result?.AsReadOnly() ?? [];
+    }
+
+    public async Task<IReadOnlyList<string>> GetSubfamiliesAsync(
+        string tenantId,
+        string familia,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(familia)}";
+        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content
+            .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
+        return result?.AsReadOnly() ?? [];
+    }
+
     public async Task<IReadOnlyList<PurchaseReportLine>> GetPurchaseReportAsync(
         string tenantId,
         string familia,
         string? subFamilia = null,
         CancellationToken cancellationToken = default)
     {
-        var url = BuildUrl(familia, subFamilia);
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("X-Tenant-Id", tenantId);
-        request.Headers.Add("X-Application-Id", _options.ApplicationId);
-
+        var url = BuildReportUrl(familia, subFamilia);
+        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
         using var response = await httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
 
@@ -54,14 +86,20 @@ internal sealed class PurchaseReportProxy(
         return result;
     }
 
-    private static string BuildUrl(string familia, string? subFamilia)
+    private HttpRequestMessage TenantRequest(HttpMethod method, string url, string tenantId)
+    {
+        var request = new HttpRequestMessage(method, url);
+        request.Headers.Add("X-Tenant-Id", tenantId);
+        request.Headers.Add("X-Application-Id", _options.ApplicationId);
+        return request;
+    }
+
+    private static string BuildReportUrl(string familia, string? subFamilia)
     {
         var sb = new StringBuilder("/api/reports/purchase-v2?familia=")
             .Append(Uri.EscapeDataString(familia));
-
         if (!string.IsNullOrWhiteSpace(subFamilia))
             sb.Append("&subFamilia=").Append(Uri.EscapeDataString(subFamilia));
-
         return sb.ToString();
     }
 

@@ -7,13 +7,13 @@ public sealed class PurchaseReportLine
     public string Familia { get; init; } = string.Empty;
     public string SubFamilia { get; init; } = string.Empty;
 
-    public decimal RequeridoStock { get; init; }
+    public bool RequeridoStock { get; init; }
     public decimal ExistenciaEfectiva { get; init; }
 
     public decimal Ventas45Dias { get; init; }
     public decimal DemandaDiaria { get; init; }
     public decimal DesviacionEstandarDiaria { get; init; }
-    public decimal CoeficienteVariacion { get; init; }
+    public decimal? CoeficienteVariacion { get; init; }
 
     public string Abc { get; init; } = string.Empty;
     public string Xyz { get; init; } = string.Empty;

@@ -1,0 +1,66 @@
+<div style="font-family:'Segoe UI',Arial,sans-serif;color:#000;background:#fff;padding:20px;">
+
+    <h2 style="font-size:18px;margin:0 0 4px 0;">Sugerencia de Compra Inteligente</h2>
+    <hr style="border:none;border-top:2px solid #333;margin:6px 0 12px 0;" />
+
+    <table style="width:100%;font-size:12px;margin-bottom:14px;border-collapse:collapse;">
+        <tr>
+            <td style="padding:2px 12px 2px 0;"><strong>Tenant:</strong> @TenantName</td>
+            <td style="padding:2px 12px;"><strong>Familia:</strong> @Familia</td>
+            <td style="padding:2px 0;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(Subfamilia) ? "Todas" : Subfamilia)</td>
+        </tr>
+        <tr>
+            <td style="padding:2px 12px 2px 0;"><strong>Fecha:</strong> @_fecha</td>
+            <td style="padding:2px 12px;"><strong>SKUs sugeridos:</strong> @Items.Count</td>
+            <td style="padding:2px 0;"><strong>Cantidad total:</strong> @Items.Sum(x => x.CantidadSugerida).ToString("N0")</td>
+        </tr>
+    </table>
+
+    <table style="width:100%;border-collapse:collapse;font-size:10px;">
+        <thead>
+            <tr style="background:#222;color:#fff;">
+                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">SKU</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">Descripcion</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">SubFamilia</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Existencia</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Ventas 45d</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Cant/Emp</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Paq.Sug.</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Cant.Sug.</th>
+                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">Motivo Compra</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Items.Count; i++)
+            {
+                var item = Items[i];
+                var rowBg = i % 2 == 0 ? "#fff" : "#f5f5f5";
+                <tr style="background:@rowBg;">
+                    <td style="border:1px solid #ccc;padding:3px 6px;font-family:monospace;font-size:9px;">@item.Sku</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;">@item.Descripcion</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;">@item.SubFamilia</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.ExistenciaEfectiva.ToString("N0")</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.Ventas45Dias.ToString("N0")</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.CantidadPorEmpaque.ToString("N0")</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.PaquetesSugeridos.ToString("N0")</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;font-weight:bold;">@item.CantidadSugerida.ToString("N0")</td>
+                    <td style="border:1px solid #ccc;padding:3px 6px;font-size:9px;">@item.MotivoCompra</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p style="font-size:9px;color:#888;margin-top:12px;text-align:right;">
+        Reporte de Compra Inteligente &mdash; @_fecha
+    </p>
+
+</div>
+
+@code {
+    [Parameter] public IReadOnlyList<PurchaseReportLine> Items { get; set; } = [];
+    [Parameter] public string TenantName { get; set; } = string.Empty;
+    [Parameter] public string Familia { get; set; } = string.Empty;
+    [Parameter] public string Subfamilia { get; set; } = string.Empty;
+
+    private readonly string _fecha = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+}

@@ -1,6 +1,24 @@
+<div class="mb-2" style="max-width:420px">
+    <div class="input-group">
+        <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
+        <input type="text" class="form-control form-control-sm" placeholder="Buscar por SKU o descripcion"
+               value="@Vm.SearchText"
+               @oninput="HandleSearch" />
+        @if (!string.IsNullOrEmpty(Vm.SearchText))
+        {
+            <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleClearSearch"
+                    title="Limpiar busqueda">&#x2715;</button>
+        }
+    </div>
+</div>
+
 @if (!Vm.FilteredItems.Any())
 {
-    <div class="text-center text-muted py-4 border rounded">Sin resultados con los filtros aplicados.</div>
+    <div class="text-center text-muted py-4 border rounded">
+        @(string.IsNullOrWhiteSpace(Vm.SearchText)
+            ? "No hay productos para los filtros seleccionados."
+            : "No hay productos que coincidan con la busqueda y filtros seleccionados.")
+    </div>
 }
 else
 {
@@ -9,23 +27,23 @@ else
             <thead class="table-dark">
                 <tr>
                     <th>SKU</th>
-                    <th>Descripción</th>
+                    <th>Descripcion</th>
                     <th>SubFamilia</th>
-                    <th class="text-end">Req. Stock</th>
-                    <th class="text-end">Exist. Efect.</th>
+                    <th class="text-center">Req.Stock</th>
+                    <th class="text-end">Existencia</th>
                     <th class="text-end">Ventas 45d</th>
                     <th class="text-center">ABC</th>
                     <th class="text-center">XYZ</th>
-                    <th class="text-end">Cant./Emp.</th>
-                    <th class="text-end">Paq. Sug.</th>
-                    <th class="text-end">Cant. Sug.</th>
+                    <th class="text-end">Cant/Emp</th>
+                    <th class="text-end">Paq.Sug.</th>
+                    <th class="text-end">Cant.Sug.</th>
                     <th>Motivo Compra</th>
                     <th class="text-center">Alerta</th>
-                    <th class="text-center">Rev.</th>
+                    <th class="text-center">Revision</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Vm.FilteredItems)
+                @foreach (var item in Vm.PagedItems)
                 {
                     <tr class="@(Vm.SelectedItem == item ? "table-active" : "")"
                         style="cursor:pointer"
@@ -33,7 +51,7 @@ else
                         <td><code class="text-nowrap">@item.Sku</code></td>
                         <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@item.Descripcion">@item.Descripcion</td>
                         <td>@item.SubFamilia</td>
-                        <td class="text-end">@item.RequeridoStock.ToString("N0")</td>
+                        <td class="text-center">@(item.RequeridoStock ? "✓" : "")</td>
                         <td class="text-end">@item.ExistenciaEfectiva.ToString("N0")</td>
                         <td class="text-end">@item.Ventas45Dias.ToString("N0")</td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
@@ -54,12 +72,55 @@ else
             </tbody>
         </table>
     </div>
-    <div class="text-muted small mt-1">@Vm.FilteredItems.Count ítem(s)</div>
+
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <div class="text-muted small">
+            Mostrando @Vm.PagedFrom–@Vm.PagedTo de @Vm.FilteredItems.Count productos
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-secondary" @onclick="HandlePrevious"
+                    disabled="@(Vm.CurrentPage <= 1)">
+                Anterior
+            </button>
+            <span class="small">Pagina @Vm.CurrentPage de @Vm.TotalPages</span>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="HandleNext"
+                    disabled="@(Vm.CurrentPage >= Vm.TotalPages)">
+                Siguiente
+            </button>
+        </div>
+    </div>
 }
 
 @code {
     [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback<PurchaseReportLine> OnRowClick { get; set; }
+    [Parameter] public EventCallback OnPageChanged { get; set; }
+
+    private async Task HandleSearch(ChangeEventArgs e)
+    {
+        Vm.SearchText = e.Value?.ToString() ?? string.Empty;
+        Vm.ResetPagination();
+        await OnPageChanged.InvokeAsync();
+    }
+
+    private async Task HandleClearSearch()
+    {
+        Vm.SearchText = string.Empty;
+        Vm.ResetPagination();
+        await OnPageChanged.InvokeAsync();
+    }
+
+    private async Task HandlePrevious()
+    {
+        Vm.GoToPreviousPage();
+        await OnPageChanged.InvokeAsync();
+    }
+
+    private async Task HandleNext()
+    {
+        Vm.GoToNextPage();
+        await OnPageChanged.InvokeAsync();
+    }
 
     private static string AlertBadgeClass(string nivel) => nivel.ToUpperInvariant() switch
     {

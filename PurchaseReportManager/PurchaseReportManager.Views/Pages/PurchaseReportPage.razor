@@ -1,11 +1,41 @@
 @page "/reporte-compras"
 @rendermode InteractiveServer
 @inject PurchaseReportViewModel Vm
+@inject IJSRuntime JS
 
 <PageTitle>Reporte de Compra Inteligente</PageTitle>
 
+<style>
+    #purchase-print-area {
+        position: fixed;
+        left: -9999px;
+        top: 0;
+        width: 21cm;
+    }
+    @@media print {
+        body * { visibility: hidden; }
+        #purchase-print-area, #purchase-print-area * { visibility: visible; }
+        #purchase-print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+</style>
+
 <div class="container-fluid py-3">
-    <h2 class="mb-3">Reporte de Compra Inteligente</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="mb-0">Reporte de Compra Inteligente</h2>
+        @if (Vm.Items.Count > 0)
+        {
+            <button class="btn btn-outline-secondary btn-sm" @onclick="HandlePrint"
+                    disabled="@(PrintItems.Count == 0)"
+                    title="@(PrintItems.Count == 0 ? "No hay productos con compra sugerida" : $"{PrintItems.Count} SKUs con compra sugerida")">
+                Imprimir sugerencia de compra
+            </button>
+        }
+    </div>
 
     <PurchaseReportFilters Vm="Vm" OnLoad="HandleLoad" OnClearFilters="HandleClearFilters" OnFilterChanged="StateHasChanged" />
 
@@ -24,11 +54,18 @@
     }
     else if (Vm.Items.Count > 0)
     {
-        <PurchaseReportSummaryCards Vm="Vm" />
+        <PurchaseReportSummaryCards Vm="Vm" OnFilterChanged="StateHasChanged" />
 
-        <div class="row g-3 mt-1">
+        <div id="purchase-print-area">
+            <PurchaseSuggestionPrintView Items="PrintItems"
+                                         TenantName="@TenantDisplayName"
+                                         Familia="@Vm.SelectedFamilia"
+                                         Subfamilia="@(Vm.SelectedSubFamilia ?? string.Empty)" />
+        </div>
+
+        <div class="row g-3">
             <div class="@(Vm.SelectedItem is not null ? "col-lg-8" : "col-12")">
-                <PurchaseReportTable Vm="Vm" OnRowClick="HandleRowClick" />
+                <PurchaseReportTable Vm="Vm" OnRowClick="HandleRowClick" OnPageChanged="StateHasChanged" />
             </div>
             @if (Vm.SelectedItem is not null)
             {
@@ -41,6 +78,18 @@
 </div>
 
 @code {
+    private IReadOnlyList<PurchaseReportLine> PrintItems =>
+        Vm.Items.Where(x => x.TieneSugerencia).ToList().AsReadOnly();
+
+    private string TenantDisplayName =>
+        Vm.Tenants.FirstOrDefault(t => t.Id == Vm.SelectedTenantId)?.Name ?? Vm.SelectedTenantId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Vm.InitializeAsync();
+        StateHasChanged();
+    }
+
     private async Task HandleLoad()
     {
         await Vm.LoadAsync();
@@ -51,6 +100,12 @@
     {
         Vm.ClearFilters();
         StateHasChanged();
+    }
+
+    private async Task HandlePrint()
+    {
+        if (PrintItems.Count == 0) return;
+        await JS.InvokeVoidAsync("print");
     }
 
     private void HandleRowClick(PurchaseReportLine item) => Vm.SelectItem(item);

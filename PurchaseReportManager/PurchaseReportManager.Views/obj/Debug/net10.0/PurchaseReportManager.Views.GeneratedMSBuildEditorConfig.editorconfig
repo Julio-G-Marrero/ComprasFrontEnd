@@ -38,6 +38,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydFRhYmxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseSuggestionPrintView.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVN1Z2dlc3Rpb25QcmludFZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Pages/PurchaseReportPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VSZXBvcnRQYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
