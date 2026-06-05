@@ -1,13 +1,18 @@
-<div class="mb-2" style="max-width:420px">
+<div class="mb-2" style="max-width:500px">
     <div class="input-group">
-        <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
-        <input type="text" class="form-control form-control-sm" placeholder="Buscar por SKU o descripcion"
+        <span class="input-group-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+        </span>
+        <input type="text" class="form-control form-control-sm"
+               placeholder="Buscar por SKU, descripción, familia, ABC, XYZ, motivo…"
                value="@Vm.SearchText"
                @oninput="HandleSearch" />
         @if (!string.IsNullOrEmpty(Vm.SearchText))
         {
             <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleClearSearch"
-                    title="Limpiar busqueda">&#x2715;</button>
+                    title="Limpiar búsqueda">&#x2715;</button>
         }
     </div>
 </div>
@@ -17,29 +22,30 @@
     <div class="text-center text-muted py-4 border rounded">
         @(string.IsNullOrWhiteSpace(Vm.SearchText)
             ? "No hay productos para los filtros seleccionados."
-            : "No hay productos que coincidan con la busqueda y filtros seleccionados.")
+            : "No hay productos que coincidan con la búsqueda y filtros seleccionados.")
     </div>
 }
 else
 {
-    <div class="table-responsive">
+    <div class="table-responsive purchase-table-wrapper">
         <table class="table table-sm table-hover table-bordered align-middle mb-0">
             <thead class="table-dark">
                 <tr>
-                    <th>SKU</th>
-                    <th>Descripcion</th>
-                    <th>SubFamilia</th>
+                    @SortHeader("SKU",          "sku",          "")
+                    @SortHeader("Descripción",  "descripcion",  "")
+                    @SortHeader("SubFamilia",   "subfamilia",   "")
                     <th class="text-center">Req.Stock</th>
-                    <th class="text-end">Existencia</th>
-                    <th class="text-end">Ventas 45d</th>
-                    <th class="text-center">ABC</th>
-                    <th class="text-center">XYZ</th>
+                    @SortHeader("Existencia",   "existencia",   "text-end")
+                    @SortHeader($"Ventas {Vm.WindowDays}d", "ventas", "text-end")
+                    @SortHeader("ABC",          "abc",          "text-center")
+                    @SortHeader("XYZ",          "xyz",          "text-center")
                     <th class="text-end">Cant/Emp</th>
                     <th class="text-end">Paq.Sug.</th>
-                    <th class="text-end">Cant.Sug.</th>
+                    @SortHeader("Cant.Sug.",    "cantsugerida", "text-end")
                     <th>Motivo Compra</th>
-                    <th class="text-center">Alerta</th>
-                    <th class="text-center">Revision</th>
+                    @SortHeader("Alerta",       "alerta",       "text-center")
+                    @SortHeader("Inventario",   "inventario",   "text-center")
+                    <th class="text-center">Revisión</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,19 +58,28 @@ else
                         <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@item.Descripcion">@item.Descripcion</td>
                         <td>@item.SubFamilia</td>
                         <td class="text-center">@(item.RequeridoStock ? "✓" : "")</td>
-                        <td class="text-end">@item.ExistenciaEfectiva.ToString("N0")</td>
-                        <td class="text-end">@item.Ventas45Dias.ToString("N0")</td>
+                        <td class="text-end">@item.ExistenciaEfectiva.ToString("N2")</td>
+                        <td class="text-end">@item.Ventas45Dias.ToString("N2")</td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Xyz</span></td>
                         <td class="text-end">@item.CantidadPorEmpaque.ToString("N0")</td>
                         <td class="text-end">@item.PaquetesSugeridos.ToString("N0")</td>
-                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.CantidadSugerida.ToString("N0")</td>
+                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.CantidadSugerida.ToString("N2")</td>
                         <td><small class="text-nowrap">@item.MotivoCompra</small></td>
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.NivelAlerta))
                             {
                                 <span class="@AlertBadgeClass(item.NivelAlerta)">@item.NivelAlerta</span>
                             }
+                        </td>
+                        <td class="text-center">
+                            @if (!string.IsNullOrEmpty(item.EstadoInventario))
+                            {
+                                <span class="@InventarioBadgeClass(item.EstadoInventario)" title="@item.MotivoInventario">
+                                    @InventarioLabel(item.EstadoInventario)
+                                </span>
+                            }
+                            else { <span class="text-muted small">-</span> }
                         </td>
                         <td class="text-center">@(item.RequiereRevision ? "✓" : "")</td>
                     </tr>
@@ -79,14 +94,10 @@ else
         </div>
         <div class="d-flex align-items-center gap-2">
             <button class="btn btn-sm btn-outline-secondary" @onclick="HandlePrevious"
-                    disabled="@(Vm.CurrentPage <= 1)">
-                Anterior
-            </button>
-            <span class="small">Pagina @Vm.CurrentPage de @Vm.TotalPages</span>
+                    disabled="@(Vm.CurrentPage <= 1)">Anterior</button>
+            <span class="small">Página @Vm.CurrentPage de @Vm.TotalPages</span>
             <button class="btn btn-sm btn-outline-secondary" @onclick="HandleNext"
-                    disabled="@(Vm.CurrentPage >= Vm.TotalPages)">
-                Siguiente
-            </button>
+                    disabled="@(Vm.CurrentPage >= Vm.TotalPages)">Siguiente</button>
         </div>
     </div>
 }
@@ -95,6 +106,27 @@ else
     [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback<PurchaseReportLine> OnRowClick { get; set; }
     [Parameter] public EventCallback OnPageChanged { get; set; }
+
+    private RenderFragment SortHeader(string label, string col, string thClass) => __builder =>
+    {
+        var isActive = Vm.SortColumn == col;
+        var icon = isActive ? (Vm.SortAscending ? "↑" : "↓") : "⇅";
+        var iconOpacity = isActive ? "1" : "0.35";
+        var extraClass = string.IsNullOrEmpty(thClass) ? "" : $" {thClass}";
+        __builder.OpenElement(0, "th");
+        __builder.AddAttribute(1, "class", $"sort-header{extraClass}");
+        __builder.AddAttribute(2, "onclick", EventCallback.Factory.Create(__builder, async () => await HandleSort(col)));
+        __builder.AddAttribute(3, "title", $"Ordenar por {label}");
+        __builder.AddContent(4, label);
+        __builder.AddMarkupContent(5, $" <span style=\"opacity:{iconOpacity};font-size:0.75em\">{icon}</span>");
+        __builder.CloseElement();
+    };
+
+    private async Task HandleSort(string col)
+    {
+        Vm.SetSort(col);
+        await OnPageChanged.InvokeAsync();
+    }
 
     private async Task HandleSearch(ChangeEventArgs e)
     {
@@ -125,9 +157,27 @@ else
     private static string AlertBadgeClass(string nivel) => nivel.ToUpperInvariant() switch
     {
         "CRITICO" => "badge bg-danger",
-        "ALTO"    => "badge bg-warning text-dark",
-        "MEDIO"   => "badge bg-info text-dark",
+        "ALTO"    => "badge bg-warning",
+        "MEDIO"   => "badge bg-info",
         "BAJO"    => "badge bg-success",
         _         => "badge bg-secondary"
+    };
+
+    private static string InventarioBadgeClass(string estado) => estado.ToUpperInvariant() switch
+    {
+        "SALUDABLE"           => "badge bg-success",
+        "BAJO_OBJETIVO"       => "badge bg-warning",
+        "SOBRESTOCK"          => "badge bg-dark",
+        "SIN_VENTA_CON_STOCK" => "badge bg-secondary",
+        _                     => "badge bg-light text-dark"
+    };
+
+    private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
+    {
+        "SALUDABLE"           => "Saludable",
+        "BAJO_OBJETIVO"       => "Bajo objetivo",
+        "SOBRESTOCK"          => "Sobrestock",
+        "SIN_VENTA_CON_STOCK" => "Sin venta c/stock",
+        _                     => estado
     };
 }

@@ -1,0 +1,13 @@
+.purchase-table-wrapper {
+    overflow-x: auto;
+}
+
+::deep .sort-header {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+::deep .sort-header:hover {
+    background-color: #16213a !important;
+}

@@ -8,6 +8,7 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\Purch
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\PurchaseReportManager.Proxy.AssemblyInfoInputs.cache
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\PurchaseReportManager.Proxy.AssemblyInfo.cs
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\PurchaseReportManager.Proxy.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\PurchaseReportManager.Proxy.sourcelink.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\Purchase.3A835FB8.Up2Date
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\PurchaseReportManager.Proxy.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Proxy\obj\Debug\net10.0\refint\PurchaseReportManager.Proxy.dll

@@ -3,7 +3,7 @@
 @inject PurchaseReportViewModel Vm
 @inject IJSRuntime JS
 
-<PageTitle>Reporte de Compra Inteligente</PageTitle>
+<PageTitle>Modulo de Compras</PageTitle>
 
 <style>
     #purchase-print-area {
@@ -26,7 +26,7 @@
 
 <div class="container-fluid py-3">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h2 class="mb-0">Reporte de Compra Inteligente</h2>
+        <h2 class="mb-0">Modulo de Compras</h2>
         @if (Vm.Items.Count > 0)
         {
             <button class="btn btn-outline-secondary btn-sm" @onclick="HandlePrint"
@@ -39,18 +39,26 @@
 
     <PurchaseReportFilters Vm="Vm" OnLoad="HandleLoad" OnClearFilters="HandleClearFilters" OnFilterChanged="StateHasChanged" />
 
+    <PurchaseReportParamsPanel Vm="Vm" OnApply="HandleLoad" />
+
     @if (Vm.IsLoading)
     {
         <div class="text-center my-5">
-            <div class="spinner-border text-primary" role="status">
+            <div class="spinner-border text-primary" style="width:3rem;height:3rem" role="status">
                 <span class="visually-hidden">Cargando...</span>
             </div>
-            <p class="mt-2 text-muted">Generando reporte...</p>
+            <p class="mt-3 text-muted fs-6">Generando reporte de compra inteligente...</p>
         </div>
     }
     else if (Vm.ErrorMessage is not null)
     {
         <div class="alert alert-danger mt-3">@Vm.ErrorMessage</div>
+    }
+    else if (string.IsNullOrWhiteSpace(Vm.SelectedTenantId))
+    {
+        <div class="text-center text-muted my-5">
+            <p class="fs-5">Selecciona un tenant para generar el reporte.</p>
+        </div>
     }
     else if (Vm.Items.Count > 0)
     {
@@ -70,7 +78,7 @@
             @if (Vm.SelectedItem is not null)
             {
                 <div class="col-lg-4">
-                    <PurchaseReportDetailPanel Item="Vm.SelectedItem" OnClose="HandleCloseDetail" />
+                    <PurchaseReportDetailPanel Item="Vm.SelectedItem" OnClose="HandleCloseDetail" WindowDays="Vm.WindowDays" />
                 </div>
             }
         </div>
@@ -86,8 +94,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Vm.StateChanged += () => InvokeAsync(StateHasChanged);
         await Vm.InitializeAsync();
-        StateHasChanged();
     }
 
     private async Task HandleLoad()

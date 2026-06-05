@@ -17,10 +17,17 @@
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Inventario y demanda</p>
             @Row("Existencia efectiva", Item.ExistenciaEfectiva.ToString("N2"))
-            @Row("Ventas 45 días", Item.Ventas45Dias.ToString("N2"))
+            @Row($"Ventas {WindowDays} días", Item.Ventas45Dias.ToString("N2"))
             @Row("Demanda diaria", Item.DemandaDiaria.ToString("N4"))
             @Row("Desviación estándar diaria", Item.DesviacionEstandarDiaria.ToString("N4"))
             @Row("Coeficiente de variación", Item.CoeficienteVariacion.HasValue ? Item.CoeficienteVariacion.Value.ToString("N4") : "-")
+
+            <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Interpretación de inventario</p>
+            @Row("Estado inventario", InventarioLabel(Item.EstadoInventario))
+            @Row("Días cobertura actual", Item.DiasCoberturaActual.HasValue ? $"{Item.DiasCoberturaActual.Value:N2} días" : "-")
+            @Row("Exceso inventario", Item.ExcesoInventario.ToString("N2"))
+            @Row("% exceso inventario", Item.PorcentajeExcesoInventario.HasValue ? $"{Item.PorcentajeExcesoInventario.Value:N2}%" : "-")
+            @Row("Motivo inventario", string.IsNullOrEmpty(Item.MotivoInventario) ? "-" : Item.MotivoInventario)
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Parámetros de reorden</p>
             @Row("Días proveedor", Item.DiasProveedor.ToString("N0"))
@@ -38,7 +45,7 @@
             @Row("Paquetes sugeridos", Item.PaquetesSugeridos.ToString("N0"))
             <div class="d-flex justify-content-between border-bottom py-1 small">
                 <span class="text-muted">Cantidad sugerida</span>
-                <span class="fw-bold text-primary">@Item.CantidadSugerida.ToString("N0")</span>
+                <span class="fw-bold text-primary">@Item.CantidadSugerida.ToString("N2")</span>
             </div>
             @Row("Motivo compra", Item.MotivoCompra)
 
@@ -55,6 +62,16 @@
 @code {
     [Parameter] public PurchaseReportLine? Item { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public int WindowDays { get; set; } = 45;
+
+    private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
+    {
+        "SALUDABLE"           => "Saludable",
+        "BAJO_OBJETIVO"       => "Bajo objetivo",
+        "SOBRESTOCK"          => "Sobrestock",
+        "SIN_VENTA_CON_STOCK" => "Sin venta con stock",
+        _                     => string.IsNullOrEmpty(estado) ? "-" : estado
+    };
 
     private static RenderFragment Row(string label, string value) => __builder =>
     {

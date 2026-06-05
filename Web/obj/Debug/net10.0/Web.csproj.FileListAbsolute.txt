@@ -1,3 +1,5 @@
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Views.staticwebassets.runtime.json
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Views.staticwebassets.endpoints.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\appsettings.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Web.staticwebassets.runtime.json
@@ -9,12 +11,14 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Web.d
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Web.pdb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Common.Views.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Domain.dll
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Proxy.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.ViewModels.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Views.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Common.Views.pdb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Views.pdb
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Domain.pdb
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Proxy.pdb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.ViewModels.pdb
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\Domain.pdb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\EmbeddedAttribute.cs
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\ValidatableTypeAttribute.cs
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.csproj.AssemblyReference.cache
@@ -24,6 +28,7 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.A
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.AssemblyInfo.cs
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.csproj.CoreCompileInputs.cache
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.sourcelink.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
@@ -32,7 +37,7 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\scope
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\scopedcss\Components\Layout\ReconnectModal.razor.rz.scp.css
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\scopedcss\bundle\Web.styles.css
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\scopedcss\projectbundle\Web.bundle.scp.css
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\xkavssdyau-{0}-khy4lop6wu-khy4lop6wu.gz
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\xkavssdyau-{0}-5wfohpj2d1-5wfohpj2d1.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\5lp9u1qguk-{0}-bqjiyaj88i-bqjiyaj88i.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\sebiwq06kw-{0}-c2jlpeoesf-c2jlpeoesf.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\ygaj0afh2p-{0}-erw9l3u2r3-erw9l3u2r3.gz
@@ -80,8 +85,8 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compr
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\wn7tfq2zxw-{0}-abdmv1u4y3-abdmv1u4y3.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\dvmvd6hs63-{0}-b9228eflpl-b9228eflpl.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\9dvhe18ksu-{0}-2tj1sjhksk-2tj1sjhksk.gz
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\w0u4xjpyxz-{0}-3jk44lf6ll-3jk44lf6ll.gz
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\k89rhi3gy1-{0}-3jk44lf6ll-3jk44lf6ll.gz
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\w0u4xjpyxz-{0}-oag9fipdz3-oag9fipdz3.gz
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\compressed\k89rhi3gy1-{0}-ia05o8zrvo-ia05o8zrvo.gz
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\staticwebassets.development.json
@@ -93,6 +98,3 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\refin
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.pdb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\Web.genruntimeconfig.cache
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\obj\Debug\net10.0\ref\Web.dll
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Proxy.dll
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Proxy.pdb
-C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Web\bin\Debug\net10.0\PurchaseReportManager.Views.staticwebassets.endpoints.json

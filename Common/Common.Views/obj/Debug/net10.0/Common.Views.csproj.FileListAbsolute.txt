@@ -5,6 +5,7 @@ C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Deb
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.AssemblyInfoInputs.cache
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.AssemblyInfo.cs
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.sourcelink.json
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\refint\Common.Views.dll
 C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\Common\Common.Views\obj\Debug\net10.0\Common.Views.pdb

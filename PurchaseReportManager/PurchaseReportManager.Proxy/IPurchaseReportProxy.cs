@@ -19,6 +19,24 @@ public interface IPurchaseReportProxy
     Task<IReadOnlyList<PurchaseReportLine>> GetPurchaseReportAsync(
         string tenantId,
         string familia,
-        string? subFamilia = null,
+        string? subFamilia,
+        int windowDays,
+        int reviewFrequencyDays,
+        decimal serviceLevel,
+        int defaultSupplierDays,
+        decimal minOperationalStock,
+        decimal xyzXThreshold,
+        decimal xyzYThreshold,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<PurchaseReportLine>> GetAllPurchaseReportAsync(
+        string tenantId,
+        int windowDays,
+        int reviewFrequencyDays,
+        decimal serviceLevel,
+        int defaultSupplierDays,
+        decimal minOperationalStock,
+        decimal xyzXThreshold,
+        decimal xyzYThreshold,
         CancellationToken cancellationToken = default);
 }

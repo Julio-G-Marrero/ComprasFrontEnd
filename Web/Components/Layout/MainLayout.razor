@@ -1,18 +1,32 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject NavigationManager Nav
+@implements IDisposable
 
-<div class="page">
-    <div class="sidebar">
+<div class="app-shell">
+    <header class="app-header d-flex align-items-center px-3">
+        <button class="hamburger-btn me-3" @onclick="OpenMenu" title="Menú">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </button>
+        <span class="app-brand">Módulo de Compras</span>
+    </header>
+
+    @if (_menuOpen)
+    {
+        <div class="nav-overlay" @onclick="CloseMenu"></div>
+    }
+
+    <div class="nav-drawer @(_menuOpen ? "nav-drawer--open" : "")">
+        <div class="nav-drawer-header d-flex justify-content-between align-items-center px-3 py-3">
+            <span class="text-white fw-semibold">Navegación</span>
+            <button class="btn-close btn-close-white btn-sm" @onclick="CloseMenu" aria-label="Cerrar"></button>
+        </div>
         <NavMenu />
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
+    <main class="app-content">
+        @Body
     </main>
 </div>
 
@@ -21,3 +35,23 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool _menuOpen;
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _menuOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OpenMenu() => _menuOpen = true;
+    private void CloseMenu() => _menuOpen = false;
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+}

@@ -36,4 +36,10 @@ internal sealed class PurchaseReportLineDto
     public string NivelAlerta { get; init; } = string.Empty;
     public bool RequiereRevision { get; init; }
     public string MotivoRevision { get; init; } = string.Empty;
+
+    public decimal? DiasCoberturaActual { get; init; }
+    public decimal ExcesoInventario { get; init; }
+    public decimal? PorcentajeExcesoInventario { get; init; }
+    public string EstadoInventario { get; init; } = string.Empty;
+    public string MotivoInventario { get; init; } = string.Empty;
 }

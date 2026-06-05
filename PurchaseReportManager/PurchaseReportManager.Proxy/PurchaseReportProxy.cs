@@ -55,10 +55,17 @@ internal sealed class PurchaseReportProxy(
     public async Task<IReadOnlyList<PurchaseReportLine>> GetPurchaseReportAsync(
         string tenantId,
         string familia,
-        string? subFamilia = null,
+        string? subFamilia,
+        int windowDays,
+        int reviewFrequencyDays,
+        decimal serviceLevel,
+        int defaultSupplierDays,
+        decimal minOperationalStock,
+        decimal xyzXThreshold,
+        decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        var url = BuildReportUrl(familia, subFamilia);
+        var url = BuildReportUrl(familia, subFamilia, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
         using var request = TenantRequest(HttpMethod.Get, url, tenantId);
         using var response = await httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -86,6 +93,35 @@ internal sealed class PurchaseReportProxy(
         return result;
     }
 
+    public async Task<IReadOnlyList<PurchaseReportLine>> GetAllPurchaseReportAsync(
+        string tenantId,
+        int windowDays,
+        int reviewFrequencyDays,
+        decimal serviceLevel,
+        int defaultSupplierDays,
+        decimal minOperationalStock,
+        decimal xyzXThreshold,
+        decimal xyzYThreshold,
+        CancellationToken cancellationToken = default)
+    {
+        var url = BuildParamsUrl("/api/reports/purchase-v2/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
+        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var apiResponse = await response.Content
+            .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
+
+        if (apiResponse is null || !apiResponse.Success)
+            throw new InvalidOperationException(
+                apiResponse?.Message ?? "La API devolvió un resultado fallido.");
+
+        if (apiResponse.Data is null or { Count: 0 })
+            return [];
+
+        return apiResponse.Data.Select(Map).ToList().AsReadOnly();
+    }
+
     private HttpRequestMessage TenantRequest(HttpMethod method, string url, string tenantId)
     {
         var request = new HttpRequestMessage(method, url);
@@ -94,13 +130,40 @@ internal sealed class PurchaseReportProxy(
         return request;
     }
 
-    private static string BuildReportUrl(string familia, string? subFamilia)
+    private static string BuildReportUrl(string familia, string? subFamilia,
+        int windowDays, int reviewFrequencyDays, decimal serviceLevel,
+        int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
     {
         var sb = new StringBuilder("/api/reports/purchase-v2?familia=")
             .Append(Uri.EscapeDataString(familia));
         if (!string.IsNullOrWhiteSpace(subFamilia))
             sb.Append("&subFamilia=").Append(Uri.EscapeDataString(subFamilia));
+        AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY);
         return sb.ToString();
+    }
+
+    private static string BuildParamsUrl(string baseUrl,
+        int windowDays, int reviewFrequencyDays, decimal serviceLevel,
+        int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
+    {
+        var sb = new StringBuilder(baseUrl).Append('?');
+        AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY, firstParam: true);
+        return sb.ToString();
+    }
+
+    private static void AppendParams(StringBuilder sb, int windowDays, int reviewFrequencyDays,
+        decimal serviceLevel, int defaultSupplierDays, decimal minOperationalStock,
+        decimal xyzX, decimal xyzY, bool firstParam = false)
+    {
+        var ic = System.Globalization.CultureInfo.InvariantCulture;
+        var sep = firstParam ? string.Empty : "&";
+        sb.Append(sep).Append("windowDays=").Append(windowDays)
+          .Append("&reviewFrequencyDays=").Append(reviewFrequencyDays)
+          .Append("&serviceLevel=").Append(serviceLevel.ToString("G", ic))
+          .Append("&defaultSupplierDays=").Append(defaultSupplierDays)
+          .Append("&minOperationalStock=").Append(minOperationalStock.ToString("G", ic))
+          .Append("&xyzXThreshold=").Append(xyzX.ToString("G", ic))
+          .Append("&xyzYThreshold=").Append(xyzY.ToString("G", ic));
     }
 
     private static PurchaseReportLine Map(PurchaseReportLineDto d) => new()
@@ -132,6 +195,11 @@ internal sealed class PurchaseReportProxy(
         MotivoCompra = d.MotivoCompra,
         NivelAlerta = d.NivelAlerta,
         RequiereRevision = d.RequiereRevision,
-        MotivoRevision = d.MotivoRevision
+        MotivoRevision = d.MotivoRevision,
+        DiasCoberturaActual = d.DiasCoberturaActual,
+        ExcesoInventario = d.ExcesoInventario,
+        PorcentajeExcesoInventario = d.PorcentajeExcesoInventario,
+        EstadoInventario = d.EstadoInventario,
+        MotivoInventario = d.MotivoInventario
     };
 }

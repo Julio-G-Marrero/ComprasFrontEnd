@@ -37,6 +37,12 @@ public sealed class PurchaseReportLine
     public bool RequiereRevision { get; init; }
     public string MotivoRevision { get; init; } = string.Empty;
 
+    public decimal? DiasCoberturaActual { get; init; }
+    public decimal ExcesoInventario { get; init; }
+    public decimal? PorcentajeExcesoInventario { get; init; }
+    public string EstadoInventario { get; init; } = string.Empty;
+    public string MotivoInventario { get; init; } = string.Empty;
+
     public bool EsCritico => NivelAlerta.Equals("CRITICO", StringComparison.OrdinalIgnoreCase);
     public bool TieneSugerencia => CantidadSugerida > 0;
 }

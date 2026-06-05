@@ -5,6 +5,20 @@ namespace PurchaseReportManager.ViewModels;
 
 public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
 {
+    public const string TodasFamilias = "Todas";
+
+    public static readonly string[] XyzPresetNames =
+        ["Muy estricta", "Estricta", "Normal tienda", "Tolerante", "Muy tolerante"];
+
+    private static readonly (decimal X, decimal Y)[] XyzPresets =
+    [
+        (0.50m, 1.00m),
+        (0.75m, 1.50m),
+        (1.00m, 2.00m),
+        (1.50m, 3.00m),
+        (2.00m, 4.00m),
+    ];
+
     private IReadOnlyList<PurchaseReportLine> _items = [];
 
     // Catálogos
@@ -14,11 +28,39 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
 
     // Selecciones
     public string SelectedTenantId { get; set; } = string.Empty;
-    public string SelectedFamilia { get; set; } = string.Empty;
+    public string SelectedFamilia { get; set; } = TodasFamilias;
     public string? SelectedSubFamilia { get; set; }
 
+    // Parámetros del cálculo
+    public int WindowDays { get; set; } = 45;
+    public int ReviewFrequencyDays { get; set; } = 7;
+    public decimal ServiceLevelPercent { get; set; } = 95m;
+    public int DefaultSupplierDays { get; set; } = 14;
+    public decimal MinOperationalStock { get; set; } = 1m;
+    public int XyzTolerancePreset { get; set; } = 4;
+    public decimal XyzXThreshold => XyzPresets[XyzTolerancePreset - 1].X;
+    public decimal XyzYThreshold => XyzPresets[XyzTolerancePreset - 1].Y;
+
+    public void RestoreDefaults()
+    {
+        WindowDays = 45;
+        ReviewFrequencyDays = 7;
+        ServiceLevelPercent = 95m;
+        DefaultSupplierDays = 14;
+        MinOperationalStock = 1m;
+        XyzTolerancePreset = 4;
+    }
+
     // Estado de carga
-    public bool IsLoading { get; private set; }
+    public event Action? StateChanged;
+
+    private bool _isLoading;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        private set { _isLoading = value; StateChanged?.Invoke(); }
+    }
+
     public bool IsLoadingCatalog { get; private set; }
     public string? ErrorMessage { get; private set; }
     public string? CatalogErrorMessage { get; private set; }
@@ -33,20 +75,80 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     public bool SoloRequiereRevision { get; set; }
     public string SearchText { get; set; } = string.Empty;
 
+    // Ordenamiento
+    public string SortColumn { get; private set; } = "prioridad";
+    public bool SortAscending { get; private set; } = false;
+
+    public void SetSort(string column)
+    {
+        if (SortColumn == column)
+            SortAscending = !SortAscending;
+        else
+        {
+            SortColumn = column;
+            SortAscending = column is "sku" or "descripcion" or "subfamilia" or "abc" or "xyz";
+        }
+        ResetPagination();
+    }
+
     // Paginación
     public const int PageSize = 20;
     public int CurrentPage { get; private set; } = 1;
 
-    public IReadOnlyList<PurchaseReportLine> FilteredItems =>
-        _items
-            .Where(x => !SoloConCompraSugerida || x.TieneSugerencia)
-            .Where(x => !SoloCriticos || x.EsCritico)
-            .Where(x => !SoloRequiereRevision || x.RequiereRevision)
-            .Where(x => string.IsNullOrWhiteSpace(SearchText) ||
-                        x.Sku.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                        x.Descripcion.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
-            .ToList()
-            .AsReadOnly();
+    public IReadOnlyList<PurchaseReportLine> FilteredItems
+    {
+        get
+        {
+            var filtered = _items
+                .Where(x => !SoloConCompraSugerida || x.TieneSugerencia)
+                .Where(x => !SoloCriticos || x.EsCritico)
+                .Where(x => !SoloRequiereRevision || x.RequiereRevision)
+                .Where(x => string.IsNullOrWhiteSpace(SearchText) || MatchesSearch(x));
+            return SortItems(filtered).ToList().AsReadOnly();
+        }
+    }
+
+    private bool MatchesSearch(PurchaseReportLine x)
+    {
+        var q = SearchText;
+        return x.Sku.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Descripcion.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Familia.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.SubFamilia.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Abc.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Xyz.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.MotivoCompra.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.NivelAlerta.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.EstadoInventario.Contains(q, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private IEnumerable<PurchaseReportLine> SortItems(IEnumerable<PurchaseReportLine> items) =>
+        SortColumn switch
+        {
+            "sku"         => Ord(items, x => x.Sku),
+            "descripcion" => Ord(items, x => x.Descripcion),
+            "subfamilia"  => Ord(items, x => x.SubFamilia),
+            "existencia"  => Ord(items, x => x.ExistenciaEfectiva),
+            "ventas"      => Ord(items, x => x.Ventas45Dias),
+            "abc"         => Ord(items, x => x.Abc),
+            "xyz"         => Ord(items, x => x.Xyz),
+            "cantsugerida"=> Ord(items, x => x.CantidadSugerida),
+            "alerta"      => Ord(items, x => AlertOrder(x.NivelAlerta)),
+            "inventario"  => Ord(items, x => x.EstadoInventario),
+            _             => items
+                                .OrderByDescending(x => AlertOrder(x.NivelAlerta))
+                                .ThenByDescending(x => x.TieneSugerencia)
+                                .ThenByDescending(x => x.CantidadSugerida),
+        };
+
+    private IOrderedEnumerable<PurchaseReportLine> Ord<T>(
+        IEnumerable<PurchaseReportLine> items, Func<PurchaseReportLine, T> key) where T : IComparable<T> =>
+        SortAscending ? items.OrderBy(key) : items.OrderByDescending(key);
+
+    private static int AlertOrder(string nivel) => nivel.ToUpperInvariant() switch
+    {
+        "CRITICO" => 4, "ALTO" => 3, "MEDIO" => 2, "BAJO" => 1, _ => 0
+    };
 
     public int TotalPages => Math.Max(1, (int)Math.Ceiling(FilteredItems.Count / (double)PageSize));
     public int PagedFrom => FilteredItems.Count == 0 ? 0 : (CurrentPage - 1) * PageSize + 1;
@@ -61,7 +163,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     public decimal CantidadTotalSugerida => FilteredItems.Sum(x => x.CantidadSugerida);
     public int ProductosCriticos => FilteredItems.Count(x => x.EsCritico);
     public int ProductosRevision => FilteredItems.Count(x => x.RequiereRevision);
-    public decimal VentasTotales45Dias => FilteredItems.Sum(x => x.Ventas45Dias);
+    public decimal VentasTotales => FilteredItems.Sum(x => x.Ventas45Dias);
     public decimal TotalExistenciaEfectiva => FilteredItems.Sum(x => x.ExistenciaEfectiva);
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -71,14 +173,6 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         try
         {
             Tenants = await proxy.GetTenantsAsync(cancellationToken);
-
-            var preferred = Tenants.FirstOrDefault(t => t.Id == "FSPCORONA_NEW")
-                            ?? Tenants.FirstOrDefault();
-            if (preferred is not null)
-            {
-                SelectedTenantId = preferred.Id;
-                await LoadFamiliesAsync(cancellationToken);
-            }
         }
         catch (Exception ex)
         {
@@ -92,7 +186,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
 
     public async Task OnTenantChangedAsync(CancellationToken cancellationToken = default)
     {
-        SelectedFamilia = string.Empty;
+        SelectedFamilia = TodasFamilias;
         SelectedSubFamilia = null;
         Families = [];
         Subfamilies = [];
@@ -112,6 +206,8 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         {
             IsLoadingCatalog = false;
         }
+
+        await LoadAsync(cancellationToken);
     }
 
     public async Task OnFamiliaChangedAsync(CancellationToken cancellationToken = default)
@@ -123,7 +219,12 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         CatalogErrorMessage = null;
         ResetPagination();
 
-        if (string.IsNullOrEmpty(SelectedFamilia)) return;
+        if (SelectedFamilia == TodasFamilias || string.IsNullOrEmpty(SelectedFamilia))
+        {
+            SelectedFamilia = TodasFamilias;
+            await LoadAsync(cancellationToken);
+            return;
+        }
 
         IsLoadingCatalog = true;
         try
@@ -138,6 +239,8 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         {
             IsLoadingCatalog = false;
         }
+
+        await LoadAsync(cancellationToken);
     }
 
     public async Task LoadAsync(CancellationToken cancellationToken = default)
@@ -145,23 +248,32 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         ErrorMessage = null;
 
         if (string.IsNullOrWhiteSpace(SelectedTenantId))
-        {
-            ErrorMessage = "Debe seleccionar un tenant.";
             return;
-        }
-        if (string.IsNullOrWhiteSpace(SelectedFamilia))
-        {
-            ErrorMessage = "La familia es obligatoria.";
-            return;
-        }
 
         IsLoading = true;
         try
         {
-            var subfamilia = string.IsNullOrEmpty(SelectedSubFamilia) ? null : SelectedSubFamilia;
-            _items = await proxy.GetPurchaseReportAsync(SelectedTenantId, SelectedFamilia, subfamilia, cancellationToken);
+            if (SelectedFamilia == TodasFamilias || string.IsNullOrWhiteSpace(SelectedFamilia))
+            {
+                SelectedFamilia = TodasFamilias;
+                _items = await proxy.GetAllPurchaseReportAsync(
+                    SelectedTenantId, WindowDays, ReviewFrequencyDays, ServiceLevelPercent,
+                    DefaultSupplierDays, MinOperationalStock,
+                    XyzXThreshold, XyzYThreshold, cancellationToken);
+            }
+            else
+            {
+                var subfamilia = string.IsNullOrEmpty(SelectedSubFamilia) ? null : SelectedSubFamilia;
+                _items = await proxy.GetPurchaseReportAsync(
+                    SelectedTenantId, SelectedFamilia, subfamilia,
+                    WindowDays, ReviewFrequencyDays, ServiceLevelPercent,
+                    DefaultSupplierDays, MinOperationalStock,
+                    XyzXThreshold, XyzYThreshold, cancellationToken);
+            }
             SelectedItem = null;
             SearchText = string.Empty;
+            SortColumn = "prioridad";
+            SortAscending = false;
             ResetPagination();
         }
         catch (Exception ex)

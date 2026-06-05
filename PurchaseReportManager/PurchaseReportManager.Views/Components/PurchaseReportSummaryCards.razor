@@ -25,7 +25,7 @@
         <div class="card text-center h-100 border-primary">
             <div class="card-body py-2">
                 <p class="card-text text-muted small mb-1">Cantidad total sugerida</p>
-                <p class="fs-4 fw-bold text-primary mb-0">@Vm.CantidadTotalSugerida.ToString("N0")</p>
+                <p class="fs-4 fw-bold text-primary mb-0">@Vm.CantidadTotalSugerida.ToString("N2")</p>
             </div>
         </div>
     </div>
@@ -57,8 +57,8 @@
     <div class="col-sm">
         <div class="card text-center h-100">
             <div class="card-body py-2">
-                <p class="card-text text-muted small mb-1">Ventas 45 dias</p>
-                <p class="fs-4 fw-bold mb-0">@Vm.VentasTotales45Dias.ToString("N0")</p>
+                <p class="card-text text-muted small mb-1">Ventas @Vm.WindowDays d</p>
+                <p class="fs-4 fw-bold mb-0">@Vm.VentasTotales.ToString("N2")</p>
             </div>
         </div>
     </div>
@@ -67,7 +67,7 @@
         <div class="card text-center h-100">
             <div class="card-body py-2">
                 <p class="card-text text-muted small mb-1">Existencia efectiva</p>
-                <p class="fs-4 fw-bold mb-0">@Vm.TotalExistenciaEfectiva.ToString("N0")</p>
+                <p class="fs-4 fw-bold mb-0">@Vm.TotalExistenciaEfectiva.ToString("N2")</p>
             </div>
         </div>
     </div>
