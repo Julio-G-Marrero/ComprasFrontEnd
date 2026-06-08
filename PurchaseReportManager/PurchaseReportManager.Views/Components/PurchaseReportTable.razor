@@ -33,6 +33,7 @@ else
                 <tr>
                     @SortHeader("SKU",          "sku",          "")
                     @SortHeader("Descripción",  "descripcion",  "")
+                    @SortHeader("Familia",      "familia",      "")
                     @SortHeader("SubFamilia",   "subfamilia",   "")
                     <th class="text-center">Req.Stock</th>
                     @SortHeader("Existencia",   "existencia",   "text-end")
@@ -55,8 +56,9 @@ else
                         style="cursor:pointer"
                         @onclick="() => OnRowClick.InvokeAsync(item)">
                         <td><code class="text-nowrap">@item.Sku</code></td>
-                        <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@item.Descripcion">@item.Descripcion</td>
-                        <td>@item.SubFamilia</td>
+                        <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@LegacyTextNormalizer.Normalize(item.Descripcion)">@LegacyTextNormalizer.Normalize(item.Descripcion)</td>
+                        <td>@LegacyTextNormalizer.Normalize(item.Familia)</td>
+                        <td>@LegacyTextNormalizer.Normalize(item.SubFamilia)</td>
                         <td class="text-center">@(item.RequeridoStock ? "✓" : "")</td>
                         <td class="text-end">@item.ExistenciaEfectiva.ToString("N2")</td>
                         <td class="text-end">@item.Ventas45Dias.ToString("N2")</td>
@@ -65,17 +67,17 @@ else
                         <td class="text-end">@item.CantidadPorEmpaque.ToString("N0")</td>
                         <td class="text-end">@item.PaquetesSugeridos.ToString("N0")</td>
                         <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.CantidadSugerida.ToString("N2")</td>
-                        <td><small class="text-nowrap">@item.MotivoCompra</small></td>
+                        <td><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.MotivoCompra)</small></td>
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.NivelAlerta))
                             {
-                                <span class="@AlertBadgeClass(item.NivelAlerta)">@item.NivelAlerta</span>
+                                <span class="@AlertBadgeClass(item.NivelAlerta)">@AlertDisplayText(item.NivelAlerta)</span>
                             }
                         </td>
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.EstadoInventario))
                             {
-                                <span class="@InventarioBadgeClass(item.EstadoInventario)" title="@item.MotivoInventario">
+                                <span class="@InventarioBadgeClass(item.EstadoInventario)" title="@LegacyTextNormalizer.Normalize(item.MotivoInventario)">
                                     @InventarioLabel(item.EstadoInventario)
                                 </span>
                             }
@@ -159,8 +161,14 @@ else
         "CRITICO" => "badge bg-danger",
         "ALTO"    => "badge bg-warning",
         "MEDIO"   => "badge bg-info",
-        "BAJO"    => "badge bg-success",
+        "BAJO"    => "text-muted small",
         _         => "badge bg-secondary"
+    };
+
+    private static string AlertDisplayText(string nivel) => nivel.ToUpperInvariant() switch
+    {
+        "BAJO" => "N/A",
+        _      => nivel
     };
 
     private static string InventarioBadgeClass(string estado) => estado.ToUpperInvariant() switch
@@ -174,7 +182,7 @@ else
 
     private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
     {
-        "SALUDABLE"           => "Saludable",
+        "SALUDABLE"           => "Óptimo",
         "BAJO_OBJETIVO"       => "Bajo objetivo",
         "SOBRESTOCK"          => "Sobrestock",
         "SIN_VENTA_CON_STOCK" => "Sin venta c/stock",

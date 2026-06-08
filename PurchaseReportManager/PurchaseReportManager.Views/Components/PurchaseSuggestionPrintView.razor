@@ -1,64 +1,72 @@
-<div style="font-family:'Segoe UI',Arial,sans-serif;color:#000;background:#fff;padding:20px;">
+<div style="font-family:'Segoe UI',Arial,sans-serif;color:#000;background:#fff;padding:24px 28px;font-size:11px;">
 
-    <h2 style="font-size:18px;margin:0 0 4px 0;">Sugerencia de Compra Inteligente</h2>
-    <hr style="border:none;border-top:2px solid #333;margin:6px 0 12px 0;" />
+    <div style="border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;">
+        <div>
+            <div style="font-size:17px;font-weight:bold;letter-spacing:0.4px;margin-bottom:2px;">LISTA DE EMPAQUE</div>
+            <div style="font-size:9px;color:#555;">Reporte de Módulo de Compras</div>
+        </div>
+        <div style="text-align:right;font-size:10px;">
+            <strong>Fecha:</strong> @_fecha
+        </div>
+    </div>
 
-    <table style="width:100%;font-size:12px;margin-bottom:14px;border-collapse:collapse;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:10px;">
         <tr>
-            <td style="padding:2px 12px 2px 0;"><strong>Tenant:</strong> @TenantName</td>
-            <td style="padding:2px 12px;"><strong>Familia:</strong> @Familia</td>
-            <td style="padding:2px 0;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(Subfamilia) ? "Todas" : Subfamilia)</td>
-        </tr>
-        <tr>
-            <td style="padding:2px 12px 2px 0;"><strong>Fecha:</strong> @_fecha</td>
-            <td style="padding:2px 12px;"><strong>SKUs sugeridos:</strong> @Items.Count</td>
-            <td style="padding:2px 0;"><strong>Cantidad total:</strong> @Items.Sum(x => x.CantidadSugerida).ToString("N0")</td>
+            <td style="padding:2px 10px 2px 0;white-space:nowrap;"><strong>Sucursal:</strong> @SucursalName</td>
+            <td style="padding:2px 10px;white-space:nowrap;"><strong>Familia:</strong> @(string.IsNullOrEmpty(Familia) || Familia == "Todas" ? "Todas" : Familia)</td>
+            <td style="padding:2px 10px;white-space:nowrap;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(Subfamilia) ? "Todas" : Subfamilia)</td>
+            <td style="padding:2px 0;text-align:right;white-space:nowrap;">
+                <strong>SKUs:</strong> @Items.Count &nbsp;&nbsp;
+                <strong>Cant. total:</strong> @Items.Sum(x => x.CantidadSugerida).ToString("N0")
+            </td>
         </tr>
     </table>
 
     <table style="width:100%;border-collapse:collapse;font-size:10px;">
         <thead>
-            <tr style="background:#222;color:#fff;">
-                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">SKU</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">Descripcion</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">SubFamilia</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Existencia</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Ventas 45d</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Cant/Emp</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Paq.Sug.</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:right;">Cant.Sug.</th>
-                <th style="border:1px solid #555;padding:5px 6px;text-align:left;">Motivo Compra</th>
+            <tr style="border-top:1.5px solid #000;border-bottom:1.5px solid #000;">
+                <th style="padding:5px 6px;text-align:left;">Cód. Interno</th>
+                <th style="padding:5px 6px;text-align:left;">Cód. Barras</th>
+                <th style="padding:5px 6px;text-align:left;">Descripción</th>
+                <th style="padding:5px 6px;text-align:left;">Familia</th>
+                <th style="padding:5px 6px;text-align:left;">SubFamilia</th>
+                <th style="padding:5px 6px;text-align:right;">Paq. Sug.</th>
+                <th style="padding:5px 6px;text-align:right;">Cant. Sug.</th>
             </tr>
         </thead>
         <tbody>
             @for (var i = 0; i < Items.Count; i++)
             {
                 var item = Items[i];
-                var rowBg = i % 2 == 0 ? "#fff" : "#f5f5f5";
-                <tr style="background:@rowBg;">
-                    <td style="border:1px solid #ccc;padding:3px 6px;font-family:monospace;font-size:9px;">@item.Sku</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;">@item.Descripcion</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;">@item.SubFamilia</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.ExistenciaEfectiva.ToString("N0")</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.Ventas45Dias.ToString("N0")</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.CantidadPorEmpaque.ToString("N0")</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;">@item.PaquetesSugeridos.ToString("N0")</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;text-align:right;font-weight:bold;">@item.CantidadSugerida.ToString("N0")</td>
-                    <td style="border:1px solid #ccc;padding:3px 6px;font-size:9px;">@item.MotivoCompra</td>
+                var rowBg = i % 2 == 0 ? "#fff" : "#f6f6f6";
+                <tr style="background:@rowBg;border-bottom:1px solid #e0e0e0;">
+                    <td style="padding:4px 6px;font-family:monospace;font-size:9px;white-space:nowrap;">@item.Sku</td>
+                    <td style="padding:4px 6px;color:#999;">-</td>
+                    <td style="padding:4px 6px;">@LegacyTextNormalizer.Normalize(item.Descripcion)</td>
+                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.Familia)</td>
+                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.SubFamilia)</td>
+                    <td style="padding:4px 6px;text-align:right;">@item.PaquetesSugeridos.ToString("N0")</td>
+                    <td style="padding:4px 6px;text-align:right;font-weight:bold;">@item.CantidadSugerida.ToString("N0")</td>
                 </tr>
             }
         </tbody>
+        <tfoot>
+            <tr style="border-top:1.5px solid #000;">
+                <td colspan="5" style="padding:5px 6px;font-weight:bold;">Total</td>
+                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.PaquetesSugeridos).ToString("N0")</td>
+                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.CantidadSugerida).ToString("N0")</td>
+            </tr>
+        </tfoot>
     </table>
 
-    <p style="font-size:9px;color:#888;margin-top:12px;text-align:right;">
-        Reporte de Compra Inteligente &mdash; @_fecha
+    <p style="font-size:8px;color:#aaa;margin-top:14px;padding-top:6px;border-top:1px solid #ddd;text-align:right;">
+        Lista de Empaque &mdash; @_fecha
     </p>
-
 </div>
 
 @code {
     [Parameter] public IReadOnlyList<PurchaseReportLine> Items { get; set; } = [];
-    [Parameter] public string TenantName { get; set; } = string.Empty;
+    [Parameter] public string SucursalName { get; set; } = string.Empty;
     [Parameter] public string Familia { get; set; } = string.Empty;
     [Parameter] public string Subfamilia { get; set; } = string.Empty;
 

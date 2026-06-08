@@ -7,11 +7,11 @@
         @if (Item is not null)
         {
             <p class="fw-bold text-primary mb-0"><code>@Item.Sku</code></p>
-            <p class="text-muted small mb-3">@Item.Descripcion</p>
+            <p class="text-muted small mb-3">@LegacyTextNormalizer.Normalize(Item.Descripcion)</p>
 
             <p class="fw-semibold small text-uppercase text-muted mb-1">Clasificación</p>
-            @Row("Familia", Item.Familia)
-            @Row("SubFamilia", Item.SubFamilia)
+            @Row("Familia", LegacyTextNormalizer.Normalize(Item.Familia))
+            @Row("SubFamilia", LegacyTextNormalizer.Normalize(Item.SubFamilia))
             @Row("ABC", Item.Abc)
             @Row("XYZ", Item.Xyz)
 
@@ -27,7 +27,7 @@
             @Row("Días cobertura actual", Item.DiasCoberturaActual.HasValue ? $"{Item.DiasCoberturaActual.Value:N2} días" : "-")
             @Row("Exceso inventario", Item.ExcesoInventario.ToString("N2"))
             @Row("% exceso inventario", Item.PorcentajeExcesoInventario.HasValue ? $"{Item.PorcentajeExcesoInventario.Value:N2}%" : "-")
-            @Row("Motivo inventario", string.IsNullOrEmpty(Item.MotivoInventario) ? "-" : Item.MotivoInventario)
+            @Row("Motivo inventario", string.IsNullOrEmpty(Item.MotivoInventario) ? "-" : LegacyTextNormalizer.Normalize(Item.MotivoInventario))
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Parámetros de reorden</p>
             @Row("Días proveedor", Item.DiasProveedor.ToString("N0"))
@@ -47,13 +47,13 @@
                 <span class="text-muted">Cantidad sugerida</span>
                 <span class="fw-bold text-primary">@Item.CantidadSugerida.ToString("N2")</span>
             </div>
-            @Row("Motivo compra", Item.MotivoCompra)
+            @Row("Motivo compra", LegacyTextNormalizer.Normalize(Item.MotivoCompra))
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Alertas</p>
-            @Row("Nivel alerta", Item.NivelAlerta)
+            @Row("Nivel alerta", Item.NivelAlerta.ToUpperInvariant() == "BAJO" ? "Sin alerta" : Item.NivelAlerta)
             @if (Item.RequiereRevision)
             {
-                @Row("Motivo revisión", Item.MotivoRevision)
+                @Row("Motivo revisión", LegacyTextNormalizer.Normalize(Item.MotivoRevision))
             }
         }
     </div>
@@ -66,7 +66,7 @@
 
     private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
     {
-        "SALUDABLE"           => "Saludable",
+        "SALUDABLE"           => "Óptimo",
         "BAJO_OBJETIVO"       => "Bajo objetivo",
         "SOBRESTOCK"          => "Sobrestock",
         "SIN_VENTA_CON_STOCK" => "Sin venta con stock",

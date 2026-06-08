@@ -7,10 +7,10 @@
 
         <div class="row g-3 align-items-end">
             <div class="col-md-3">
-                <label class="form-label fw-semibold">Tenant <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Sucursal <span class="text-danger">*</span></label>
                 <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading)"
                         @bind="Vm.SelectedTenantId" @bind:after="HandleTenantChanged">
-                    <option value="">Selecciona un tenant...</option>
+                    <option value="">Selecciona una sucursal...</option>
                     @foreach (var t in Vm.Tenants)
                     {
                         <option value="@t.Id">@t.Name</option>

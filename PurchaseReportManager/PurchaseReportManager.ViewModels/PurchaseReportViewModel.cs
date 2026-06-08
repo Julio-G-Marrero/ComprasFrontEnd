@@ -86,7 +86,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         else
         {
             SortColumn = column;
-            SortAscending = column is "sku" or "descripcion" or "subfamilia" or "abc" or "xyz";
+            SortAscending = column is "sku" or "descripcion" or "familia" or "subfamilia" or "abc" or "xyz";
         }
         ResetPagination();
     }
@@ -111,15 +111,21 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     private bool MatchesSearch(PurchaseReportLine x)
     {
         var q = SearchText;
+        var inventarioAlias = x.EstadoInventario.ToUpperInvariant() == "SALUDABLE" ? "óptimo" : string.Empty;
         return x.Sku.Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Descripcion.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.Descripcion).Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Familia.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.Familia).Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.SubFamilia.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.SubFamilia).Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Abc.Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Xyz.Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.MotivoCompra.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.MotivoCompra).Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.NivelAlerta.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.EstadoInventario.Contains(q, StringComparison.OrdinalIgnoreCase);
+            || x.EstadoInventario.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || (!string.IsNullOrEmpty(inventarioAlias) && inventarioAlias.Contains(q, StringComparison.OrdinalIgnoreCase));
     }
 
     private IEnumerable<PurchaseReportLine> SortItems(IEnumerable<PurchaseReportLine> items) =>
@@ -127,6 +133,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         {
             "sku"         => Ord(items, x => x.Sku),
             "descripcion" => Ord(items, x => x.Descripcion),
+            "familia"     => Ord(items, x => x.Familia),
             "subfamilia"  => Ord(items, x => x.SubFamilia),
             "existencia"  => Ord(items, x => x.ExistenciaEfectiva),
             "ventas"      => Ord(items, x => x.Ventas45Dias),
