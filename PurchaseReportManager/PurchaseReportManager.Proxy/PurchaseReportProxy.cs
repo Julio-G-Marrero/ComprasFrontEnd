@@ -104,7 +104,7 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        var url = BuildParamsUrl("/api/reports/purchase-v2/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
+        var url = BuildParamsUrl("/api/reports/purchase/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
         using var request = TenantRequest(HttpMethod.Get, url, tenantId);
         using var response = await httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -134,7 +134,7 @@ internal sealed class PurchaseReportProxy(
         int windowDays, int reviewFrequencyDays, decimal serviceLevel,
         int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
     {
-        var sb = new StringBuilder("/api/reports/purchase-v2?familia=")
+        var sb = new StringBuilder("/api/reports/purchase?familia=")
             .Append(Uri.EscapeDataString(familia));
         if (!string.IsNullOrWhiteSpace(subFamilia))
             sb.Append("&subFamilia=").Append(Uri.EscapeDataString(subFamilia));
