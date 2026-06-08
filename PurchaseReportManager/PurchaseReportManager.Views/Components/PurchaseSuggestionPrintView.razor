@@ -26,7 +26,6 @@
         <thead>
             <tr style="border-top:1.5px solid #000;border-bottom:1.5px solid #000;">
                 <th style="padding:5px 6px;text-align:left;">Cód. Interno</th>
-                <th style="padding:5px 6px;text-align:left;">Cód. Barras</th>
                 <th style="padding:5px 6px;text-align:left;">Descripción</th>
                 <th style="padding:5px 6px;text-align:left;">Familia</th>
                 <th style="padding:5px 6px;text-align:left;">SubFamilia</th>
@@ -41,7 +40,6 @@
                 var rowBg = i % 2 == 0 ? "#fff" : "#f6f6f6";
                 <tr style="background:@rowBg;border-bottom:1px solid #e0e0e0;">
                     <td style="padding:4px 6px;font-family:monospace;font-size:9px;white-space:nowrap;">@item.Sku</td>
-                    <td style="padding:4px 6px;color:#999;">-</td>
                     <td style="padding:4px 6px;">@LegacyTextNormalizer.Normalize(item.Descripcion)</td>
                     <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.Familia)</td>
                     <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.SubFamilia)</td>
@@ -52,7 +50,7 @@
         </tbody>
         <tfoot>
             <tr style="border-top:1.5px solid #000;">
-                <td colspan="5" style="padding:5px 6px;font-weight:bold;">Total</td>
+                <td colspan="4" style="padding:5px 6px;font-weight:bold;">Total</td>
                 <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.PaquetesSugeridos).ToString("N0")</td>
                 <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.CantidadSugerida).ToString("N0")</td>
             </tr>
