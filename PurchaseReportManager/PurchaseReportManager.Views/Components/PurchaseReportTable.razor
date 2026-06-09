@@ -32,17 +32,17 @@ else
             <thead class="table-dark">
                 <tr>
                     @SortHeader("SKU",          "sku",          "")
-                    @SortHeader("Descripción",  "descripcion",  "")
-                    @SortHeader("Familia",      "familia",      "")
-                    @SortHeader("SubFamilia",   "subfamilia",   "")
+                    @SortHeader("Descripción",  "description",  "")
+                    @SortHeader("Familia",      "family",       "")
+                    @SortHeader("SubFamilia",   "subfamily",    "")
                     <th class="text-center">Req.Stock</th>
-                    @SortHeader("Existencia",   "existencia",   "text-end")
-                    @SortHeader($"Ventas {Vm.WindowDays}d", "ventas", "text-end")
+                    @SortHeader("Existencia",   "stock",        "text-end")
+                    @SortHeader($"Ventas {Vm.WindowDays}d", "sales", "text-end")
                     @SortHeader("ABC",          "abc",          "text-center")
                     @SortHeader("XYZ",          "xyz",          "text-center")
                     <th class="text-end">Cant/Emp</th>
                     <th class="text-end">Paq.Sug.</th>
-                    @SortHeader("Cant.Sug.",    "cantsugerida", "text-end")
+                    @SortHeader("Cant.Sug.",    "suggestedqty", "text-end")
                     <th>Motivo Compra</th>
                     @SortHeader("Alerta",       "alerta",       "text-center")
                     @SortHeader("Inventario",   "inventario",   "text-center")
@@ -56,34 +56,34 @@ else
                         style="cursor:pointer"
                         @onclick="() => OnRowClick.InvokeAsync(item)">
                         <td><code class="text-nowrap">@item.Sku</code></td>
-                        <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@LegacyTextNormalizer.Normalize(item.Descripcion)">@LegacyTextNormalizer.Normalize(item.Descripcion)</td>
-                        <td>@LegacyTextNormalizer.Normalize(item.Familia)</td>
-                        <td>@LegacyTextNormalizer.Normalize(item.SubFamilia)</td>
-                        <td class="text-center">@(item.RequeridoStock ? "✓" : "")</td>
-                        <td class="text-end">@item.ExistenciaEfectiva.ToString("N2")</td>
-                        <td class="text-end">@item.Ventas45Dias.ToString("N2")</td>
+                        <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@LegacyTextNormalizer.Normalize(item.Description)">@LegacyTextNormalizer.Normalize(item.Description)</td>
+                        <td>@LegacyTextNormalizer.Normalize(item.Family)</td>
+                        <td>@LegacyTextNormalizer.Normalize(item.SubFamily)</td>
+                        <td class="text-center">@(item.RequiresStock ? "✓" : "")</td>
+                        <td class="text-end">@item.EffectiveStock.ToString("N2")</td>
+                        <td class="text-end">@item.SalesPeriodQuantity.ToString("N2")</td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Xyz</span></td>
-                        <td class="text-end">@item.CantidadPorEmpaque.ToString("N0")</td>
-                        <td class="text-end">@item.PaquetesSugeridos.ToString("N0")</td>
-                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.CantidadSugerida.ToString("N2")</td>
-                        <td><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.MotivoCompra)</small></td>
+                        <td class="text-end">@item.UnitsPerPackage.ToString("N0")</td>
+                        <td class="text-end">@item.SuggestedPackages.ToString("N0")</td>
+                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.SuggestedQuantity.ToString("N2")</td>
+                        <td><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.PurchaseReason)</small></td>
                         <td class="text-center">
-                            @if (!string.IsNullOrEmpty(item.NivelAlerta))
+                            @if (!string.IsNullOrEmpty(item.AlertLevel))
                             {
-                                <span class="@AlertBadgeClass(item.NivelAlerta)">@AlertDisplayText(item.NivelAlerta)</span>
+                                <span class="@AlertBadgeClass(item.AlertLevel)">@AlertDisplayText(item.AlertLevel)</span>
                             }
                         </td>
                         <td class="text-center">
-                            @if (!string.IsNullOrEmpty(item.EstadoInventario))
+                            @if (!string.IsNullOrEmpty(item.InventoryStatus))
                             {
-                                <span class="@InventarioBadgeClass(item.EstadoInventario)" title="@LegacyTextNormalizer.Normalize(item.MotivoInventario)">
-                                    @InventarioLabel(item.EstadoInventario)
+                                <span class="@InventarioBadgeClass(item.InventoryStatus)" title="@LegacyTextNormalizer.Normalize(item.InventoryReason)">
+                                    @InventarioLabel(item.InventoryStatus)
                                 </span>
                             }
                             else { <span class="text-muted small">-</span> }
                         </td>
-                        <td class="text-center">@(item.RequiereRevision ? "✓" : "")</td>
+                        <td class="text-center">@(item.RequiresReview ? "✓" : "")</td>
                     </tr>
                 }
             </tbody>

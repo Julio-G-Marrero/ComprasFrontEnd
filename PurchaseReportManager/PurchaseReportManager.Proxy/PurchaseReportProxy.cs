@@ -86,8 +86,8 @@ internal sealed class PurchaseReportProxy(
         {
             var f = result[0];
             logger.LogInformation(
-                "PurchaseReportProxy OK — items={Count} | SKU={Sku} | Ventas45Dias={Ventas} | CantidadSugerida={Sugerida} | NivelAlerta={Alerta}",
-                result.Count, f.Sku, f.Ventas45Dias, f.CantidadSugerida, f.NivelAlerta);
+                "PurchaseReportProxy OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
+                result.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
         }
 
         return result;
@@ -134,10 +134,10 @@ internal sealed class PurchaseReportProxy(
         int windowDays, int reviewFrequencyDays, decimal serviceLevel,
         int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
     {
-        var sb = new StringBuilder("/api/reports/purchase?familia=")
+        var sb = new StringBuilder("/api/reports/purchase?family=")
             .Append(Uri.EscapeDataString(familia));
         if (!string.IsNullOrWhiteSpace(subFamilia))
-            sb.Append("&subFamilia=").Append(Uri.EscapeDataString(subFamilia));
+            sb.Append("&subFamily=").Append(Uri.EscapeDataString(subFamilia));
         AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY);
         return sb.ToString();
     }
@@ -169,37 +169,37 @@ internal sealed class PurchaseReportProxy(
     private static PurchaseReportLine Map(PurchaseReportLineDto d) => new()
     {
         Sku = d.Sku,
-        Descripcion = d.Descripcion,
-        Familia = d.Familia,
-        SubFamilia = d.SubFamilia,
-        RequeridoStock = d.RequeridoStock,
-        ExistenciaEfectiva = d.ExistenciaEfectiva,
-        Ventas45Dias = d.Ventas45Dias,
-        DemandaDiaria = d.DemandaDiaria,
-        DesviacionEstandarDiaria = d.DesviacionEstandarDiaria,
-        CoeficienteVariacion = d.CoeficienteVariacion,
+        Description = d.Description,
+        Family = d.Family,
+        SubFamily = d.SubFamily,
+        RequiresStock = d.RequiresStock,
+        EffectiveStock = d.EffectiveStock,
+        SalesPeriodQuantity = d.SalesPeriodQuantity,
+        DailyDemand = d.DailyDemand,
+        DailyStandardDeviation = d.DailyStandardDeviation,
+        CoefficientOfVariation = d.CoefficientOfVariation,
         Abc = d.Abc,
         Xyz = d.Xyz,
-        DiasProveedor = d.DiasProveedor,
-        FrecuenciaRevision = d.FrecuenciaRevision,
-        PeriodoProteccion = d.PeriodoProteccion,
-        StockSeguridad = d.StockSeguridad,
-        StockMinimoOperativo = d.StockMinimoOperativo,
+        SupplierLeadTimeDays = d.SupplierLeadTimeDays,
+        ReviewFrequencyDays = d.ReviewFrequencyDays,
+        ProtectionPeriodDays = d.ProtectionPeriodDays,
+        SafetyStock = d.SafetyStock,
+        MinimumOperationalStock = d.MinimumOperationalStock,
         Rop = d.Rop,
-        InventarioObjetivoRotacion = d.InventarioObjetivoRotacion,
-        InventarioObjetivoFinal = d.InventarioObjetivoFinal,
-        CantidadBruta = d.CantidadBruta,
-        CantidadPorEmpaque = d.CantidadPorEmpaque,
-        PaquetesSugeridos = d.PaquetesSugeridos,
-        CantidadSugerida = d.CantidadSugerida,
-        MotivoCompra = d.MotivoCompra,
-        NivelAlerta = d.NivelAlerta,
-        RequiereRevision = d.RequiereRevision,
-        MotivoRevision = d.MotivoRevision,
-        DiasCoberturaActual = d.DiasCoberturaActual,
-        ExcesoInventario = d.ExcesoInventario,
-        PorcentajeExcesoInventario = d.PorcentajeExcesoInventario,
-        EstadoInventario = d.EstadoInventario,
-        MotivoInventario = d.MotivoInventario
+        RotationTargetInventory = d.RotationTargetInventory,
+        FinalTargetInventory = d.FinalTargetInventory,
+        GrossQuantity = d.GrossQuantity,
+        UnitsPerPackage = d.UnitsPerPackage,
+        SuggestedPackages = d.SuggestedPackages,
+        SuggestedQuantity = d.SuggestedQuantity,
+        PurchaseReason = d.PurchaseReason,
+        AlertLevel = d.AlertLevel,
+        RequiresReview = d.RequiresReview,
+        ReviewReason = d.ReviewReason,
+        CurrentCoverageDays = d.CurrentCoverageDays,
+        ExcessInventory = d.ExcessInventory,
+        ExcessInventoryPercentage = d.ExcessInventoryPercentage,
+        InventoryStatus = d.InventoryStatus,
+        InventoryReason = d.InventoryReason
     };
 }

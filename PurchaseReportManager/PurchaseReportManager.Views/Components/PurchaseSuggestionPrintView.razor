@@ -17,7 +17,7 @@
             <td style="padding:2px 10px;white-space:nowrap;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(Subfamilia) ? "Todas" : Subfamilia)</td>
             <td style="padding:2px 0;text-align:right;white-space:nowrap;">
                 <strong>SKUs:</strong> @Items.Count &nbsp;&nbsp;
-                <strong>Cant. total:</strong> @Items.Sum(x => x.CantidadSugerida).ToString("N0")
+                <strong>Cant. total:</strong> @Items.Sum(x => x.SuggestedQuantity).ToString("N0")
             </td>
         </tr>
     </table>
@@ -40,19 +40,19 @@
                 var rowBg = i % 2 == 0 ? "#fff" : "#f6f6f6";
                 <tr style="background:@rowBg;border-bottom:1px solid #e0e0e0;">
                     <td style="padding:4px 6px;font-family:monospace;font-size:9px;white-space:nowrap;">@item.Sku</td>
-                    <td style="padding:4px 6px;">@LegacyTextNormalizer.Normalize(item.Descripcion)</td>
-                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.Familia)</td>
-                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.SubFamilia)</td>
-                    <td style="padding:4px 6px;text-align:right;">@item.PaquetesSugeridos.ToString("N0")</td>
-                    <td style="padding:4px 6px;text-align:right;font-weight:bold;">@item.CantidadSugerida.ToString("N0")</td>
+                    <td style="padding:4px 6px;">@LegacyTextNormalizer.Normalize(item.Description)</td>
+                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.Family)</td>
+                    <td style="padding:4px 6px;white-space:nowrap;">@LegacyTextNormalizer.Normalize(item.SubFamily)</td>
+                    <td style="padding:4px 6px;text-align:right;">@item.SuggestedPackages.ToString("N0")</td>
+                    <td style="padding:4px 6px;text-align:right;font-weight:bold;">@item.SuggestedQuantity.ToString("N0")</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             <tr style="border-top:1.5px solid #000;">
                 <td colspan="4" style="padding:5px 6px;font-weight:bold;">Total</td>
-                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.PaquetesSugeridos).ToString("N0")</td>
-                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.CantidadSugerida).ToString("N0")</td>
+                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.SuggestedPackages).ToString("N0")</td>
+                <td style="padding:5px 6px;text-align:right;font-weight:bold;">@Items.Sum(x => x.SuggestedQuantity).ToString("N0")</td>
             </tr>
         </tfoot>
     </table>

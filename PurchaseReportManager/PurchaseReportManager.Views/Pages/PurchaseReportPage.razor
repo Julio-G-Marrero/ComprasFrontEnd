@@ -87,7 +87,7 @@
 
 @code {
     private IReadOnlyList<PurchaseReportLine> PrintItems =>
-        Vm.FilteredItems.Where(x => x.CantidadSugerida > 0 || x.PaquetesSugeridos > 0).ToList().AsReadOnly();
+        Vm.FilteredItems.Where(x => x.SuggestedQuantity > 0 || x.SuggestedPackages > 0).ToList().AsReadOnly();
 
     private string TenantDisplayName =>
         Vm.Tenants.FirstOrDefault(t => t.Id == Vm.SelectedTenantId)?.Name ?? Vm.SelectedTenantId;

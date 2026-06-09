@@ -86,7 +86,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         else
         {
             SortColumn = column;
-            SortAscending = column is "sku" or "descripcion" or "familia" or "subfamilia" or "abc" or "xyz";
+            SortAscending = column is "sku" or "description" or "family" or "subfamily" or "abc" or "xyz";
         }
         ResetPagination();
     }
@@ -102,7 +102,7 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
             var filtered = _items
                 .Where(x => !SoloConCompraSugerida || x.TieneSugerencia)
                 .Where(x => !SoloCriticos || x.EsCritico)
-                .Where(x => !SoloRequiereRevision || x.RequiereRevision)
+                .Where(x => !SoloRequiereRevision || x.RequiresReview)
                 .Where(x => string.IsNullOrWhiteSpace(SearchText) || MatchesSearch(x));
             return SortItems(filtered).ToList().AsReadOnly();
         }
@@ -111,41 +111,41 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     private bool MatchesSearch(PurchaseReportLine x)
     {
         var q = SearchText;
-        var inventarioAlias = x.EstadoInventario.ToUpperInvariant() == "SALUDABLE" ? "óptimo" : string.Empty;
+        var inventarioAlias = x.InventoryStatus.ToUpperInvariant() == "SALUDABLE" ? "óptimo" : string.Empty;
         return x.Sku.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.Descripcion.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || LegacyTextNormalizer.Normalize(x.Descripcion).Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.Familia.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || LegacyTextNormalizer.Normalize(x.Familia).Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.SubFamilia.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || LegacyTextNormalizer.Normalize(x.SubFamilia).Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Description.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.Description).Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.Family.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.Family).Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.SubFamily.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.SubFamily).Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Abc.Contains(q, StringComparison.OrdinalIgnoreCase)
             || x.Xyz.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.MotivoCompra.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || LegacyTextNormalizer.Normalize(x.MotivoCompra).Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.NivelAlerta.Contains(q, StringComparison.OrdinalIgnoreCase)
-            || x.EstadoInventario.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.PurchaseReason.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || LegacyTextNormalizer.Normalize(x.PurchaseReason).Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.AlertLevel.Contains(q, StringComparison.OrdinalIgnoreCase)
+            || x.InventoryStatus.Contains(q, StringComparison.OrdinalIgnoreCase)
             || (!string.IsNullOrEmpty(inventarioAlias) && inventarioAlias.Contains(q, StringComparison.OrdinalIgnoreCase));
     }
 
     private IEnumerable<PurchaseReportLine> SortItems(IEnumerable<PurchaseReportLine> items) =>
         SortColumn switch
         {
-            "sku"         => Ord(items, x => x.Sku),
-            "descripcion" => Ord(items, x => x.Descripcion),
-            "familia"     => Ord(items, x => x.Familia),
-            "subfamilia"  => Ord(items, x => x.SubFamilia),
-            "existencia"  => Ord(items, x => x.ExistenciaEfectiva),
-            "ventas"      => Ord(items, x => x.Ventas45Dias),
-            "abc"         => Ord(items, x => x.Abc),
-            "xyz"         => Ord(items, x => x.Xyz),
-            "cantsugerida"=> Ord(items, x => x.CantidadSugerida),
-            "alerta"      => Ord(items, x => AlertOrder(x.NivelAlerta)),
-            "inventario"  => Ord(items, x => x.EstadoInventario),
-            _             => items
-                                .OrderByDescending(x => AlertOrder(x.NivelAlerta))
+            "sku"          => Ord(items, x => x.Sku),
+            "description"  => Ord(items, x => x.Description),
+            "family"       => Ord(items, x => x.Family),
+            "subfamily"    => Ord(items, x => x.SubFamily),
+            "stock"        => Ord(items, x => x.EffectiveStock),
+            "sales"        => Ord(items, x => x.SalesPeriodQuantity),
+            "abc"          => Ord(items, x => x.Abc),
+            "xyz"          => Ord(items, x => x.Xyz),
+            "suggestedqty" => Ord(items, x => x.SuggestedQuantity),
+            "alerta"       => Ord(items, x => AlertOrder(x.AlertLevel)),
+            "inventario"   => Ord(items, x => x.InventoryStatus),
+            _              => items
+                                .OrderByDescending(x => AlertOrder(x.AlertLevel))
                                 .ThenByDescending(x => x.TieneSugerencia)
-                                .ThenByDescending(x => x.CantidadSugerida),
+                                .ThenByDescending(x => x.SuggestedQuantity),
         };
 
     private IOrderedEnumerable<PurchaseReportLine> Ord<T>(
@@ -167,11 +167,11 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     // Resumen (calculado sobre FilteredItems)
     public int TotalSkus => FilteredItems.Count;
     public int SkusConCompraSugerida => FilteredItems.Count(x => x.TieneSugerencia);
-    public decimal CantidadTotalSugerida => FilteredItems.Sum(x => x.CantidadSugerida);
+    public decimal CantidadTotalSugerida => FilteredItems.Sum(x => x.SuggestedQuantity);
     public int ProductosCriticos => FilteredItems.Count(x => x.EsCritico);
-    public int ProductosRevision => FilteredItems.Count(x => x.RequiereRevision);
-    public decimal VentasTotales => FilteredItems.Sum(x => x.Ventas45Dias);
-    public decimal TotalExistenciaEfectiva => FilteredItems.Sum(x => x.ExistenciaEfectiva);
+    public int ProductosRevision => FilteredItems.Count(x => x.RequiresReview);
+    public decimal VentasTotales => FilteredItems.Sum(x => x.SalesPeriodQuantity);
+    public decimal TotalExistenciaEfectiva => FilteredItems.Sum(x => x.EffectiveStock);
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {

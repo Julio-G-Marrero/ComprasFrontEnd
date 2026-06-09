@@ -7,53 +7,53 @@
         @if (Item is not null)
         {
             <p class="fw-bold text-primary mb-0"><code>@Item.Sku</code></p>
-            <p class="text-muted small mb-3">@LegacyTextNormalizer.Normalize(Item.Descripcion)</p>
+            <p class="text-muted small mb-3">@LegacyTextNormalizer.Normalize(Item.Description)</p>
 
             <p class="fw-semibold small text-uppercase text-muted mb-1">Clasificación</p>
-            @Row("Familia", LegacyTextNormalizer.Normalize(Item.Familia))
-            @Row("SubFamilia", LegacyTextNormalizer.Normalize(Item.SubFamilia))
+            @Row("Familia", LegacyTextNormalizer.Normalize(Item.Family))
+            @Row("SubFamilia", LegacyTextNormalizer.Normalize(Item.SubFamily))
             @Row("ABC", Item.Abc)
             @Row("XYZ", Item.Xyz)
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Inventario y demanda</p>
-            @Row("Existencia efectiva", Item.ExistenciaEfectiva.ToString("N2"))
-            @Row($"Ventas {WindowDays} días", Item.Ventas45Dias.ToString("N2"))
-            @Row("Demanda diaria", Item.DemandaDiaria.ToString("N4"))
-            @Row("Desviación estándar diaria", Item.DesviacionEstandarDiaria.ToString("N4"))
-            @Row("Coeficiente de variación", Item.CoeficienteVariacion.HasValue ? Item.CoeficienteVariacion.Value.ToString("N4") : "-")
+            @Row("Existencia efectiva", Item.EffectiveStock.ToString("N2"))
+            @Row($"Ventas {WindowDays} días", Item.SalesPeriodQuantity.ToString("N2"))
+            @Row("Demanda diaria", Item.DailyDemand.ToString("N4"))
+            @Row("Desviación estándar diaria", Item.DailyStandardDeviation.ToString("N4"))
+            @Row("Coeficiente de variación", Item.CoefficientOfVariation.HasValue ? Item.CoefficientOfVariation.Value.ToString("N4") : "-")
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Interpretación de inventario</p>
-            @Row("Estado inventario", InventarioLabel(Item.EstadoInventario))
-            @Row("Días cobertura actual", Item.DiasCoberturaActual.HasValue ? $"{Item.DiasCoberturaActual.Value:N2} días" : "-")
-            @Row("Exceso inventario", Item.ExcesoInventario.ToString("N2"))
-            @Row("% exceso inventario", Item.PorcentajeExcesoInventario.HasValue ? $"{Item.PorcentajeExcesoInventario.Value:N2}%" : "-")
-            @Row("Motivo inventario", string.IsNullOrEmpty(Item.MotivoInventario) ? "-" : LegacyTextNormalizer.Normalize(Item.MotivoInventario))
+            @Row("Estado inventario", InventarioLabel(Item.InventoryStatus))
+            @Row("Días cobertura actual", Item.CurrentCoverageDays.HasValue ? $"{Item.CurrentCoverageDays.Value:N2} días" : "-")
+            @Row("Exceso inventario", Item.ExcessInventory.ToString("N2"))
+            @Row("% exceso inventario", Item.ExcessInventoryPercentage.HasValue ? $"{Item.ExcessInventoryPercentage.Value:N2}%" : "-")
+            @Row("Motivo inventario", string.IsNullOrEmpty(Item.InventoryReason) ? "-" : LegacyTextNormalizer.Normalize(Item.InventoryReason))
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Parámetros de reorden</p>
-            @Row("Días proveedor", Item.DiasProveedor.ToString("N0"))
-            @Row("Frecuencia revisión", Item.FrecuenciaRevision.ToString("N0"))
-            @Row("Periodo protección", Item.PeriodoProteccion.ToString("N2"))
-            @Row("Stock seguridad", Item.StockSeguridad.ToString("N2"))
-            @Row("Stock mínimo operativo", Item.StockMinimoOperativo.ToString("N2"))
+            @Row("Días proveedor", Item.SupplierLeadTimeDays.ToString("N0"))
+            @Row("Frecuencia revisión", Item.ReviewFrequencyDays.ToString("N0"))
+            @Row("Periodo protección", Item.ProtectionPeriodDays.ToString("N2"))
+            @Row("Stock seguridad", Item.SafetyStock.ToString("N2"))
+            @Row("Stock mínimo operativo", Item.MinimumOperationalStock.ToString("N2"))
             @Row("ROP", Item.Rop.ToString("N2"))
-            @Row("Inv. objetivo rotación", Item.InventarioObjetivoRotacion.ToString("N2"))
-            @Row("Inv. objetivo final", Item.InventarioObjetivoFinal.ToString("N2"))
+            @Row("Inv. objetivo rotación", Item.RotationTargetInventory.ToString("N2"))
+            @Row("Inv. objetivo final", Item.FinalTargetInventory.ToString("N2"))
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Compra sugerida</p>
-            @Row("Cantidad bruta", Item.CantidadBruta.ToString("N2"))
-            @Row("Cantidad por empaque", Item.CantidadPorEmpaque.ToString("N0"))
-            @Row("Paquetes sugeridos", Item.PaquetesSugeridos.ToString("N0"))
+            @Row("Cantidad bruta", Item.GrossQuantity.ToString("N2"))
+            @Row("Cantidad por empaque", Item.UnitsPerPackage.ToString("N0"))
+            @Row("Paquetes sugeridos", Item.SuggestedPackages.ToString("N0"))
             <div class="d-flex justify-content-between border-bottom py-1 small">
                 <span class="text-muted">Cantidad sugerida</span>
-                <span class="fw-bold text-primary">@Item.CantidadSugerida.ToString("N2")</span>
+                <span class="fw-bold text-primary">@Item.SuggestedQuantity.ToString("N2")</span>
             </div>
-            @Row("Motivo compra", LegacyTextNormalizer.Normalize(Item.MotivoCompra))
+            @Row("Motivo compra", LegacyTextNormalizer.Normalize(Item.PurchaseReason))
 
             <p class="fw-semibold small text-uppercase text-muted mt-3 mb-1">Alertas</p>
-            @Row("Nivel alerta", Item.NivelAlerta.ToUpperInvariant() == "BAJO" ? "Sin alerta" : Item.NivelAlerta)
-            @if (Item.RequiereRevision)
+            @Row("Nivel alerta", Item.AlertLevel.ToUpperInvariant() == "BAJO" ? "Sin alerta" : Item.AlertLevel)
+            @if (Item.RequiresReview)
             {
-                @Row("Motivo revisión", LegacyTextNormalizer.Normalize(Item.MotivoRevision))
+                @Row("Motivo revisión", LegacyTextNormalizer.Normalize(Item.ReviewReason))
             }
         }
     </div>

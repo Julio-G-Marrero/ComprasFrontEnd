@@ -3,46 +3,46 @@ namespace Domain;
 public sealed class PurchaseReportLine
 {
     public string Sku { get; init; } = string.Empty;
-    public string Descripcion { get; init; } = string.Empty;
-    public string Familia { get; init; } = string.Empty;
-    public string SubFamilia { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public string Family { get; init; } = string.Empty;
+    public string SubFamily { get; init; } = string.Empty;
 
-    public bool RequeridoStock { get; init; }
-    public decimal ExistenciaEfectiva { get; init; }
+    public bool RequiresStock { get; init; }
+    public decimal EffectiveStock { get; init; }
 
-    public decimal Ventas45Dias { get; init; }
-    public decimal DemandaDiaria { get; init; }
-    public decimal DesviacionEstandarDiaria { get; init; }
-    public decimal? CoeficienteVariacion { get; init; }
+    public decimal SalesPeriodQuantity { get; init; }
+    public decimal DailyDemand { get; init; }
+    public decimal DailyStandardDeviation { get; init; }
+    public decimal? CoefficientOfVariation { get; init; }
 
     public string Abc { get; init; } = string.Empty;
     public string Xyz { get; init; } = string.Empty;
 
-    public decimal DiasProveedor { get; init; }
-    public decimal FrecuenciaRevision { get; init; }
-    public decimal PeriodoProteccion { get; init; }
-    public decimal StockSeguridad { get; init; }
-    public decimal StockMinimoOperativo { get; init; }
+    public decimal SupplierLeadTimeDays { get; init; }
+    public decimal ReviewFrequencyDays { get; init; }
+    public decimal ProtectionPeriodDays { get; init; }
+    public decimal SafetyStock { get; init; }
+    public decimal MinimumOperationalStock { get; init; }
     public decimal Rop { get; init; }
-    public decimal InventarioObjetivoRotacion { get; init; }
-    public decimal InventarioObjetivoFinal { get; init; }
+    public decimal RotationTargetInventory { get; init; }
+    public decimal FinalTargetInventory { get; init; }
 
-    public decimal CantidadBruta { get; init; }
-    public decimal CantidadPorEmpaque { get; init; }
-    public decimal PaquetesSugeridos { get; init; }
-    public decimal CantidadSugerida { get; init; }
-    public string MotivoCompra { get; init; } = string.Empty;
+    public decimal GrossQuantity { get; init; }
+    public decimal UnitsPerPackage { get; init; }
+    public decimal SuggestedPackages { get; init; }
+    public decimal SuggestedQuantity { get; init; }
+    public string PurchaseReason { get; init; } = string.Empty;
 
-    public string NivelAlerta { get; init; } = string.Empty;
-    public bool RequiereRevision { get; init; }
-    public string MotivoRevision { get; init; } = string.Empty;
+    public string AlertLevel { get; init; } = string.Empty;
+    public bool RequiresReview { get; init; }
+    public string ReviewReason { get; init; } = string.Empty;
 
-    public decimal? DiasCoberturaActual { get; init; }
-    public decimal ExcesoInventario { get; init; }
-    public decimal? PorcentajeExcesoInventario { get; init; }
-    public string EstadoInventario { get; init; } = string.Empty;
-    public string MotivoInventario { get; init; } = string.Empty;
+    public decimal? CurrentCoverageDays { get; init; }
+    public decimal ExcessInventory { get; init; }
+    public decimal? ExcessInventoryPercentage { get; init; }
+    public string InventoryStatus { get; init; } = string.Empty;
+    public string InventoryReason { get; init; } = string.Empty;
 
-    public bool EsCritico => NivelAlerta.Equals("CRITICO", StringComparison.OrdinalIgnoreCase);
-    public bool TieneSugerencia => CantidadSugerida > 0;
+    public bool EsCritico => AlertLevel.Equals("CRITICO", StringComparison.OrdinalIgnoreCase);
+    public bool TieneSugerencia => SuggestedQuantity > 0;
 }
