@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PurchaseReportManager.Proxy;
 
-public static class PurchaseReportManagerProxyExtensions
+public static class DependencyContainer
 {
     public static IServiceCollection AddPurchaseReportManagerProxy(
         this IServiceCollection services,
