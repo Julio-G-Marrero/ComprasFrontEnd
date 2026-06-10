@@ -13,13 +13,13 @@ public interface IPurchaseReportProxy
 
     Task<HandlerRequestResult<IReadOnlyList<string>>> GetSubfamiliesAsync(
         string tenantId,
-        string familia,
+        string family,
         CancellationToken cancellationToken = default);
 
     Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
         string tenantId,
-        string familia,
-        string? subFamilia,
+        string family,
+        string? subFamily,
         int windowDays,
         int reviewFrequencyDays,
         decimal serviceLevel,

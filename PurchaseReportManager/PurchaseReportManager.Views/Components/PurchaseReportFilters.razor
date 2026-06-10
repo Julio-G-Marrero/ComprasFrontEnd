@@ -21,8 +21,8 @@
             <div class="col-md-2">
                 <label class="form-label fw-semibold">Familia</label>
                 <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading)"
-                        @bind="Vm.SelectedFamilia" @bind:after="HandleFamiliaChanged">
-                    <option value="@Vm.TodasFamilias">Todas</option>
+                        @bind="Vm.SelectedFamily" @bind:after="HandleFamiliaChanged">
+                    <option value="@Vm.AllFamilies">Todas</option>
                     @foreach (var f in Vm.Families)
                     {
                         <option value="@f">@f</option>
@@ -32,8 +32,8 @@
 
             <div class="col-md-2">
                 <label class="form-label fw-semibold">SubFamilia</label>
-                <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading || Vm.SelectedFamilia == Vm.TodasFamilias || !Vm.Subfamilies.Any())"
-                        @bind="Vm.SelectedSubFamilia">
+                <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading || Vm.SelectedFamily == Vm.AllFamilies || !Vm.Subfamilies.Any())"
+                        @bind="Vm.SelectedSubFamily">
                     <option value="">Todas</option>
                     @foreach (var s in Vm.Subfamilies)
                     {
@@ -45,17 +45,17 @@
             <div class="col-md-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="chkSugerida"
-                           @bind="Vm.SoloConCompraSugerida" @bind:after="NotifyChanged" />
+                           @bind="Vm.OnlyWithSuggestedPurchase" @bind:after="NotifyChanged" />
                     <label class="form-check-label" for="chkSugerida">Solo con compra sugerida</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="chkCriticos"
-                           @bind="Vm.SoloCriticos" @bind:after="NotifyChanged" />
+                           @bind="Vm.OnlyCritical" @bind:after="NotifyChanged" />
                     <label class="form-check-label" for="chkCriticos">Solo críticos</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="chkRevision"
-                           @bind="Vm.SoloRequiereRevision" @bind:after="NotifyChanged" />
+                           @bind="Vm.OnlyRequiresReview" @bind:after="NotifyChanged" />
                     <label class="form-check-label" for="chkRevision">Solo requiere revisión</label>
                 </div>
             </div>
@@ -92,7 +92,7 @@
 
     private async Task HandleFamiliaChanged()
     {
-        await Vm.OnFamiliaChangedAsync();
+        await Vm.OnFamilyChangedAsync();
         await OnFilterChanged.InvokeAsync();
     }
 

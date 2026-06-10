@@ -4,21 +4,21 @@ namespace PurchaseReportManager.ViewModels;
 
 public interface IPurchaseReportViewModel
 {
-    // Constantes expuestas como propiedades de instancia
-    string TodasFamilias { get; }
+    // Constants exposed as instance members
+    string AllFamilies { get; }
     IReadOnlyList<string> XyzPresetNames { get; }
 
-    // Catálogos
+    // Catalogs
     IReadOnlyList<TenantOption> Tenants { get; }
     IReadOnlyList<string> Families { get; }
     IReadOnlyList<string> Subfamilies { get; }
 
-    // Selecciones
+    // Selections
     string SelectedTenantId { get; set; }
-    string SelectedFamilia { get; set; }
-    string? SelectedSubFamilia { get; set; }
+    string SelectedFamily { get; set; }
+    string? SelectedSubFamily { get; set; }
 
-    // Parámetros del cálculo
+    // Calculation parameters
     int WindowDays { get; set; }
     int ReviewFrequencyDays { get; set; }
     decimal ServiceLevelPercent { get; set; }
@@ -26,57 +26,57 @@ public interface IPurchaseReportViewModel
     decimal MinOperationalStock { get; set; }
     int XyzTolerancePreset { get; set; }
 
-    // Estado de carga
+    // Loading state
     event Action? StateChanged;
     bool IsLoading { get; }
     bool IsLoadingCatalog { get; }
     string? ErrorMessage { get; }
     string? CatalogErrorMessage { get; }
 
-    // Reporte
+    // Report data
     IReadOnlyList<PurchaseReportLine> Items { get; }
     PurchaseReportLine? SelectedItem { get; }
     IReadOnlyList<PurchaseReportLine> FilteredItems { get; }
     IReadOnlyList<PurchaseReportLine> PagedItems { get; }
 
-    // Filtros locales
-    bool SoloConCompraSugerida { get; set; }
-    bool SoloCriticos { get; set; }
-    bool SoloRequiereRevision { get; set; }
+    // Local filters
+    bool OnlyWithSuggestedPurchase { get; set; }
+    bool OnlyCritical { get; set; }
+    bool OnlyRequiresReview { get; set; }
     string SearchText { get; set; }
 
-    // Ordenamiento
+    // Sorting
     string SortColumn { get; }
     bool SortAscending { get; }
 
-    // Paginación
+    // Pagination
     int CurrentPage { get; }
     int TotalPages { get; }
     int PagedFrom { get; }
     int PagedTo { get; }
 
-    // KPIs / Resumen
+    // KPIs / Summary
     int TotalSkus { get; }
     int SkusConCompraSugerida { get; }
-    decimal CantidadTotalSugerida { get; }
-    int ProductosCriticos { get; }
-    int ProductosRevision { get; }
-    decimal VentasTotales { get; }
-    decimal TotalExistenciaEfectiva { get; }
+    decimal TotalSuggestedQuantity { get; }
+    int CriticalProducts { get; }
+    int ReviewProducts { get; }
+    decimal TotalSales { get; }
+    decimal TotalEffectiveStock { get; }
 
-    // Métodos
+    // Methods
     Task InitializeAsync(CancellationToken cancellationToken = default);
     Task OnTenantChangedAsync(CancellationToken cancellationToken = default);
-    Task OnFamiliaChangedAsync(CancellationToken cancellationToken = default);
+    Task OnFamilyChangedAsync(CancellationToken cancellationToken = default);
     Task LoadAsync(CancellationToken cancellationToken = default);
     void RestoreDefaults();
     void SetSort(string column);
     void ResetPagination();
     void GoToNextPage();
     void GoToPreviousPage();
-    void ToggleSoloCompraSugerida();
-    void ToggleSoloCriticos();
-    void ToggleSoloRevision();
+    void ToggleOnlyWithSuggestedPurchase();
+    void ToggleOnlyCritical();
+    void ToggleOnlyRequiresReview();
     void ClearFilters();
     void SelectItem(PurchaseReportLine item);
     void ClearSelection();

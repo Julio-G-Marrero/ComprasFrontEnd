@@ -58,12 +58,12 @@ internal sealed class PurchaseReportProxy(
 
     public async Task<HandlerRequestResult<IReadOnlyList<string>>> GetSubfamiliesAsync(
         string tenantId,
-        string familia,
+        string family,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(familia)}";
+            var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(family)}";
             using var request = TenantRequest(HttpMethod.Get, url, tenantId);
             using var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -74,15 +74,15 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener subfamilias para tenant {TenantId} familia {Familia}", tenantId, familia);
+            logger.LogError(ex, "Error al obtener subfamilias para tenant {TenantId} family {Family}", tenantId, family);
             return HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
         }
     }
 
     public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
         string tenantId,
-        string familia,
-        string? subFamilia,
+        string family,
+        string? subFamily,
         int windowDays,
         int reviewFrequencyDays,
         decimal serviceLevel,
@@ -94,7 +94,7 @@ internal sealed class PurchaseReportProxy(
     {
         try
         {
-            var url = BuildReportUrl(familia, subFamilia, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
+            var url = BuildReportUrl(family, subFamily, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
             using var request = TenantRequest(HttpMethod.Get, url, tenantId);
             using var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -122,7 +122,7 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener reporte de compra para tenant {TenantId} familia {Familia}", tenantId, familia);
+            logger.LogError(ex, "Error al obtener reporte de compra para tenant {TenantId} family {Family}", tenantId, family);
             return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
         }
     }
@@ -176,14 +176,14 @@ internal sealed class PurchaseReportProxy(
         return request;
     }
 
-    private static string BuildReportUrl(string familia, string? subFamilia,
+    private static string BuildReportUrl(string family, string? subFamily,
         int windowDays, int reviewFrequencyDays, decimal serviceLevel,
         int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
     {
         var sb = new StringBuilder("/api/reports/purchase?family=")
-            .Append(Uri.EscapeDataString(familia));
-        if (!string.IsNullOrWhiteSpace(subFamilia))
-            sb.Append("&subFamily=").Append(Uri.EscapeDataString(subFamilia));
+            .Append(Uri.EscapeDataString(family));
+        if (!string.IsNullOrWhiteSpace(subFamily))
+            sb.Append("&subFamily=").Append(Uri.EscapeDataString(subFamily));
         AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY);
         return sb.ToString();
     }
