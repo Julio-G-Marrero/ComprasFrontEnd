@@ -26,7 +26,7 @@ internal sealed class PurchaseReportProxy(
             var data = await response.Content
                 .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
             return HandlerRequestResult<IReadOnlyList<TenantOption>>.Ok(
-                (IReadOnlyList<TenantOption>)data?.AsReadOnly() ?? []);
+                data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
@@ -47,7 +47,7 @@ internal sealed class PurchaseReportProxy(
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
             return HandlerRequestResult<IReadOnlyList<string>>.Ok(
-                (IReadOnlyList<string>)data?.AsReadOnly() ?? []);
+                data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
@@ -70,7 +70,7 @@ internal sealed class PurchaseReportProxy(
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
             return HandlerRequestResult<IReadOnlyList<string>>.Ok(
-                (IReadOnlyList<string>)data?.AsReadOnly() ?? []);
+                data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
