@@ -16,43 +16,70 @@ internal sealed class PurchaseReportProxy(
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
     private readonly PurchaseReportProxyOptions _options = options.Value;
 
-    public async Task<IReadOnlyList<TenantOption>> GetTenantsAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
         CancellationToken cancellationToken = default)
     {
-        using var response = await httpClient.GetAsync("/api/tenants", cancellationToken);
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content
-            .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
-        return result?.AsReadOnly() ?? [];
+        try
+        {
+            using var response = await httpClient.GetAsync("/api/tenants", cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content
+                .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
+            return HandlerRequestResult<IReadOnlyList<TenantOption>>.Ok(
+                (IReadOnlyList<TenantOption>)data?.AsReadOnly() ?? []);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al obtener tenants");
+            return HandlerRequestResult<IReadOnlyList<TenantOption>>.Fail(ex.Message);
+        }
     }
 
-    public async Task<IReadOnlyList<string>> GetFamiliesAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<string>>> GetFamiliesAsync(
         string tenantId,
         CancellationToken cancellationToken = default)
     {
-        using var request = TenantRequest(HttpMethod.Get, "/api/catalog/families", tenantId);
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content
-            .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-        return result?.AsReadOnly() ?? [];
+        try
+        {
+            using var request = TenantRequest(HttpMethod.Get, "/api/catalog/families", tenantId);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content
+                .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
+            return HandlerRequestResult<IReadOnlyList<string>>.Ok(
+                (IReadOnlyList<string>)data?.AsReadOnly() ?? []);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al obtener familias para tenant {TenantId}", tenantId);
+            return HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+        }
     }
 
-    public async Task<IReadOnlyList<string>> GetSubfamiliesAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<string>>> GetSubfamiliesAsync(
         string tenantId,
         string familia,
         CancellationToken cancellationToken = default)
     {
-        var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(familia)}";
-        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content
-            .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-        return result?.AsReadOnly() ?? [];
+        try
+        {
+            var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(familia)}";
+            using var request = TenantRequest(HttpMethod.Get, url, tenantId);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content
+                .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
+            return HandlerRequestResult<IReadOnlyList<string>>.Ok(
+                (IReadOnlyList<string>)data?.AsReadOnly() ?? []);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al obtener subfamilias para tenant {TenantId} familia {Familia}", tenantId, familia);
+            return HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+        }
     }
 
-    public async Task<IReadOnlyList<PurchaseReportLine>> GetPurchaseReportAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
         string tenantId,
         string familia,
         string? subFamilia,
@@ -65,35 +92,42 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        var url = BuildReportUrl(familia, subFamilia, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
-        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        var apiResponse = await response.Content
-            .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
-
-        if (apiResponse is null || !apiResponse.Success)
-            throw new InvalidOperationException(
-                apiResponse?.Message ?? "La API devolvió un resultado fallido.");
-
-        if (apiResponse.Data is null or { Count: 0 })
-            return [];
-
-        var result = apiResponse.Data.Select(Map).ToList().AsReadOnly();
-
-        if (result.Count > 0)
+        try
         {
-            var f = result[0];
-            logger.LogInformation(
-                "PurchaseReportProxy OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
-                result.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
-        }
+            var url = BuildReportUrl(familia, subFamilia, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
+            using var request = TenantRequest(HttpMethod.Get, url, tenantId);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
 
-        return result;
+            var apiResponse = await response.Content
+                .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
+
+            if (apiResponse is null || !apiResponse.Success)
+            {
+                var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
+                logger.LogError("GetPurchaseReportAsync: {ErrorMessage}", msg);
+                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
+            }
+
+            if (apiResponse.Data is null or { Count: 0 })
+                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
+
+            var items = apiResponse.Data.Select(Map).ToList().AsReadOnly();
+            var f = items[0];
+            logger.LogInformation(
+                "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
+                items.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
+
+            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(items);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al obtener reporte de compra para tenant {TenantId} familia {Familia}", tenantId, familia);
+            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+        }
     }
 
-    public async Task<IReadOnlyList<PurchaseReportLine>> GetAllPurchaseReportAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetAllPurchaseReportAsync(
         string tenantId,
         int windowDays,
         int reviewFrequencyDays,
@@ -104,22 +138,34 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        var url = BuildParamsUrl("/api/reports/purchase/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
-        using var request = TenantRequest(HttpMethod.Get, url, tenantId);
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            var url = BuildParamsUrl("/api/reports/purchase/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
+            using var request = TenantRequest(HttpMethod.Get, url, tenantId);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
 
-        var apiResponse = await response.Content
-            .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
+            var apiResponse = await response.Content
+                .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
 
-        if (apiResponse is null || !apiResponse.Success)
-            throw new InvalidOperationException(
-                apiResponse?.Message ?? "La API devolvió un resultado fallido.");
+            if (apiResponse is null || !apiResponse.Success)
+            {
+                var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
+                logger.LogError("GetAllPurchaseReportAsync: {ErrorMessage}", msg);
+                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
+            }
 
-        if (apiResponse.Data is null or { Count: 0 })
-            return [];
+            if (apiResponse.Data is null or { Count: 0 })
+                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
 
-        return apiResponse.Data.Select(Map).ToList().AsReadOnly();
+            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
+                apiResponse.Data.Select(Map).ToList().AsReadOnly());
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al obtener reporte completo de compra para tenant {TenantId}", tenantId);
+            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+        }
     }
 
     private HttpRequestMessage TenantRequest(HttpMethod method, string url, string tenantId)

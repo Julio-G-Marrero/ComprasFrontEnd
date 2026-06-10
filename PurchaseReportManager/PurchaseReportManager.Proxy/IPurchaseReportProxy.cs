@@ -4,19 +4,19 @@ namespace PurchaseReportManager.Proxy;
 
 public interface IPurchaseReportProxy
 {
-    Task<IReadOnlyList<TenantOption>> GetTenantsAsync(
+    Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<string>> GetFamiliesAsync(
+    Task<HandlerRequestResult<IReadOnlyList<string>>> GetFamiliesAsync(
         string tenantId,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<string>> GetSubfamiliesAsync(
+    Task<HandlerRequestResult<IReadOnlyList<string>>> GetSubfamiliesAsync(
         string tenantId,
         string familia,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<PurchaseReportLine>> GetPurchaseReportAsync(
+    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
         string tenantId,
         string familia,
         string? subFamilia,
@@ -29,7 +29,7 @@ public interface IPurchaseReportProxy
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<PurchaseReportLine>> GetAllPurchaseReportAsync(
+    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetAllPurchaseReportAsync(
         string tenantId,
         int windowDays,
         int reviewFrequencyDays,

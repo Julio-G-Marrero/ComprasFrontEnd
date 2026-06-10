@@ -179,7 +179,11 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         IsLoadingCatalog = true;
         try
         {
-            Tenants = await proxy.GetTenantsAsync(cancellationToken);
+            var result = await proxy.GetTenantsAsync(cancellationToken);
+            if (result.IsSuccess)
+                Tenants = result.Data ?? [];
+            else
+                CatalogErrorMessage = $"Error al cargar tenants: {result.ErrorMessage}";
         }
         catch (Exception ex)
         {
@@ -236,7 +240,11 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         IsLoadingCatalog = true;
         try
         {
-            Subfamilies = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamilia, cancellationToken);
+            var result = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamilia, cancellationToken);
+            if (result.IsSuccess)
+                Subfamilies = result.Data ?? [];
+            else
+                CatalogErrorMessage = $"Error al cargar subfamilias: {result.ErrorMessage}";
         }
         catch (Exception ex)
         {
@@ -260,10 +268,12 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
         IsLoading = true;
         try
         {
+            HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
+
             if (SelectedFamilia == TodasFamilias || string.IsNullOrWhiteSpace(SelectedFamilia))
             {
                 SelectedFamilia = TodasFamilias;
-                _items = await proxy.GetAllPurchaseReportAsync(
+                result = await proxy.GetAllPurchaseReportAsync(
                     SelectedTenantId, WindowDays, ReviewFrequencyDays, ServiceLevelPercent,
                     DefaultSupplierDays, MinOperationalStock,
                     XyzXThreshold, XyzYThreshold, cancellationToken);
@@ -271,12 +281,18 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
             else
             {
                 var subfamilia = string.IsNullOrEmpty(SelectedSubFamilia) ? null : SelectedSubFamilia;
-                _items = await proxy.GetPurchaseReportAsync(
+                result = await proxy.GetPurchaseReportAsync(
                     SelectedTenantId, SelectedFamilia, subfamilia,
                     WindowDays, ReviewFrequencyDays, ServiceLevelPercent,
                     DefaultSupplierDays, MinOperationalStock,
                     XyzXThreshold, XyzYThreshold, cancellationToken);
             }
+
+            if (result.IsSuccess)
+                _items = result.Data ?? [];
+            else
+                ErrorMessage = result.ErrorMessage;
+
             SelectedItem = null;
             SearchText = string.Empty;
             SortColumn = "prioridad";
@@ -298,8 +314,11 @@ public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
     {
         try
         {
-            var all = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
-            Families = all.Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
+            var result = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
+            if (result.IsSuccess)
+                Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
+            else
+                CatalogErrorMessage = $"Error al cargar familias: {result.ErrorMessage}";
         }
         catch (Exception ex)
         {
