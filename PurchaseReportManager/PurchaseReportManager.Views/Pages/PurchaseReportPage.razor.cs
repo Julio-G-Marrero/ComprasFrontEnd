@@ -7,7 +7,7 @@ namespace PurchaseReportManager.Views.Pages;
 
 public sealed partial class PurchaseReportPage : IDisposable
 {
-    [Inject] private PurchaseReportViewModel Vm { get; set; } = default!;
+    [Inject] private IPurchaseReportViewModel Vm { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
     private IReadOnlyList<PurchaseReportLine> PrintItems =>

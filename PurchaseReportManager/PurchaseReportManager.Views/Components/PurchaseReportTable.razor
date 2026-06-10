@@ -105,7 +105,7 @@ else
 }
 
 @code {
-    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public IPurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback<PurchaseReportLine> OnRowClick { get; set; }
     [Parameter] public EventCallback OnPageChanged { get; set; }
 

@@ -6,7 +6,7 @@
                 @if (!_expanded)
                 {
                     <span class="text-muted small">
-                        @Vm.WindowDays d &middot; revisión @Vm.ReviewFrequencyDays d &middot; servicio @Vm.ServiceLevelPercent.ToString("G")% &middot; proveedor @Vm.DefaultSupplierDays d &middot; stock mínimo @Vm.MinOperationalStock.ToString("G") &middot; XYZ @PurchaseReportViewModel.XyzPresetNames[Vm.XyzTolerancePreset - 1]
+                        @Vm.WindowDays d &middot; revisión @Vm.ReviewFrequencyDays d &middot; servicio @Vm.ServiceLevelPercent.ToString("G")% &middot; proveedor @Vm.DefaultSupplierDays d &middot; stock mínimo @Vm.MinOperationalStock.ToString("G") &middot; XYZ @Vm.XyzPresetNames[Vm.XyzTolerancePreset - 1]
                     </span>
                 }
             </div>
@@ -86,7 +86,7 @@
                         <span class="text-muted small text-nowrap">Muy tolerante</span>
                     </div>
                     <div class="d-flex justify-content-center mt-1">
-                        <span class="badge bg-primary">@PurchaseReportViewModel.XyzPresetNames[_xyzTolerancePreset - 1]</span>
+                        <span class="badge bg-primary">@Vm.XyzPresetNames[_xyzTolerancePreset - 1]</span>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -100,7 +100,7 @@
 </div>
 
 @code {
-    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public IPurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback OnApply { get; set; }
 
     private bool _expanded;

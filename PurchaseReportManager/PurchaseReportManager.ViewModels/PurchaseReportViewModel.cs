@@ -3,12 +3,15 @@ using PurchaseReportManager.Proxy;
 
 namespace PurchaseReportManager.ViewModels;
 
-public sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy)
+internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPurchaseReportViewModel
 {
     public const string TodasFamilias = "Todas";
 
     public static readonly string[] XyzPresetNames =
         ["Muy estricta", "Estricta", "Normal tienda", "Tolerante", "Muy tolerante"];
+
+    string IPurchaseReportViewModel.TodasFamilias => TodasFamilias;
+    IReadOnlyList<string> IPurchaseReportViewModel.XyzPresetNames => XyzPresetNames;
 
     private static readonly (decimal X, decimal Y)[] XyzPresets =
     [

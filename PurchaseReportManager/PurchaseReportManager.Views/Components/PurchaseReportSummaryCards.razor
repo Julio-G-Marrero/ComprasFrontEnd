@@ -75,7 +75,7 @@
 </div>
 
 @code {
-    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public IPurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback OnFilterChanged { get; set; }
 
     private async Task HandleToggleSugerida()

@@ -22,7 +22,7 @@
                 <label class="form-label fw-semibold">Familia</label>
                 <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading)"
                         @bind="Vm.SelectedFamilia" @bind:after="HandleFamiliaChanged">
-                    <option value="@PurchaseReportViewModel.TodasFamilias">Todas</option>
+                    <option value="@Vm.TodasFamilias">Todas</option>
                     @foreach (var f in Vm.Families)
                     {
                         <option value="@f">@f</option>
@@ -32,7 +32,7 @@
 
             <div class="col-md-2">
                 <label class="form-label fw-semibold">SubFamilia</label>
-                <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading || Vm.SelectedFamilia == PurchaseReportViewModel.TodasFamilias || !Vm.Subfamilies.Any())"
+                <select class="form-select" disabled="@(Vm.IsLoadingCatalog || Vm.IsLoading || Vm.SelectedFamilia == Vm.TodasFamilias || !Vm.Subfamilies.Any())"
                         @bind="Vm.SelectedSubFamilia">
                     <option value="">Todas</option>
                     @foreach (var s in Vm.Subfamilies)
@@ -79,7 +79,7 @@
 </div>
 
 @code {
-    [Parameter] public PurchaseReportViewModel Vm { get; set; } = default!;
+    [Parameter] public IPurchaseReportViewModel Vm { get; set; } = default!;
     [Parameter] public EventCallback OnLoad { get; set; }
     [Parameter] public EventCallback OnClearFilters { get; set; }
     [Parameter] public EventCallback OnFilterChanged { get; set; }

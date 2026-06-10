@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PurchaseReportManager.ViewModels")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5de8b44727b1ecd0603befcaf944bc9e71dc8781")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af53aea43644c1e1db357dd582da125d556624e5")]
 [assembly: System.Reflection.AssemblyProductAttribute("PurchaseReportManager.ViewModels")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PurchaseReportManager.ViewModels")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
