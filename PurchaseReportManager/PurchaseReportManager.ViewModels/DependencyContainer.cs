@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PurchaseReportManager.ViewModels;
 
-public static class PurchaseReportManagerViewModelExtensions
+public static class DependencyContainer
 {
     public static IServiceCollection AddPurchaseReportManagerViewModels(
         this IServiceCollection services)

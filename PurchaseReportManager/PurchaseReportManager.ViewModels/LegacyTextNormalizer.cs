@@ -1,9 +1,5 @@
 namespace PurchaseReportManager.ViewModels;
 
-/// <summary>
-/// Corrige textos visibles dañados por Firebird Charset=NONE al leer con encoding WIN1252.
-/// Solo para presentación — no modifica datos enviados al backend.
-/// </summary>
 public static class LegacyTextNormalizer
 {
     private const char R = '�'; // Unicode replacement character
