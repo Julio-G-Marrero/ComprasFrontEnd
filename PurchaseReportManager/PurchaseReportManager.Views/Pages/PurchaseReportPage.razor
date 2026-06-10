@@ -1,7 +1,5 @@
 @page "/reporte-compras"
 @rendermode InteractiveServer
-@inject PurchaseReportViewModel Vm
-@inject IJSRuntime JS
 
 <PageTitle>Modulo de Compras</PageTitle>
 
@@ -85,37 +83,3 @@
     }
 </div>
 
-@code {
-    private IReadOnlyList<PurchaseReportLine> PrintItems =>
-        Vm.FilteredItems.Where(x => x.SuggestedQuantity > 0 || x.SuggestedPackages > 0).ToList().AsReadOnly();
-
-    private string TenantDisplayName =>
-        Vm.Tenants.FirstOrDefault(t => t.Id == Vm.SelectedTenantId)?.Name ?? Vm.SelectedTenantId;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Vm.StateChanged += () => InvokeAsync(StateHasChanged);
-        await Vm.InitializeAsync();
-    }
-
-    private async Task HandleLoad()
-    {
-        await Vm.LoadAsync();
-        StateHasChanged();
-    }
-
-    private void HandleClearFilters()
-    {
-        Vm.ClearFilters();
-        StateHasChanged();
-    }
-
-    private async Task HandlePrint()
-    {
-        if (PrintItems.Count == 0) return;
-        await JS.InvokeVoidAsync("print");
-    }
-
-    private void HandleRowClick(PurchaseReportLine item) => Vm.SelectItem(item);
-    private void HandleCloseDetail() => Vm.ClearSelection();
-}
