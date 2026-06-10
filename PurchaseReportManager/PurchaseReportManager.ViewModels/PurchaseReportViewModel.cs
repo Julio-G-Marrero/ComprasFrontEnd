@@ -56,6 +56,19 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
 
     // Loading state
     public event Action? StateChanged;
+    public event Action<string>? OnFailure;
+
+    private void NotifyFailure(string? message)
+    {
+        ErrorMessage = message;
+        OnFailure?.Invoke(message ?? string.Empty);
+    }
+
+    private void NotifyCatalogFailure(string message)
+    {
+        CatalogErrorMessage = message;
+        OnFailure?.Invoke(message);
+    }
 
     private bool _isLoading;
     public bool IsLoading
@@ -186,11 +199,11 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             if (result.IsSuccess)
                 Tenants = result.Data ?? [];
             else
-                CatalogErrorMessage = $"Error al cargar tenants: {result.ErrorMessage}";
+                NotifyCatalogFailure($"Error al cargar tenants: {result.ErrorMessage}");
         }
         catch (Exception ex)
         {
-            CatalogErrorMessage = $"Error al cargar tenants: {ex.Message}";
+            NotifyCatalogFailure($"Error al cargar tenants: {ex.Message}");
         }
         finally
         {
@@ -247,11 +260,11 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             if (result.IsSuccess)
                 Subfamilies = result.Data ?? [];
             else
-                CatalogErrorMessage = $"Error al cargar subfamilias: {result.ErrorMessage}";
+                NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
         }
         catch (Exception ex)
         {
-            CatalogErrorMessage = $"Error al cargar subfamilias: {ex.Message}";
+            NotifyCatalogFailure($"Error al cargar subfamilias: {ex.Message}");
         }
         finally
         {
@@ -294,7 +307,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             if (result.IsSuccess)
                 _items = result.Data ?? [];
             else
-                ErrorMessage = result.ErrorMessage;
+                NotifyFailure(result.ErrorMessage);
 
             SelectedItem = null;
             SearchText = string.Empty;
@@ -304,7 +317,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
+            NotifyFailure(ex.Message);
             _items = [];
         }
         finally
@@ -321,11 +334,11 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             if (result.IsSuccess)
                 Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
             else
-                CatalogErrorMessage = $"Error al cargar familias: {result.ErrorMessage}";
+                NotifyCatalogFailure($"Error al cargar familias: {result.ErrorMessage}");
         }
         catch (Exception ex)
         {
-            CatalogErrorMessage = $"Error al cargar familias: {ex.Message}";
+            NotifyCatalogFailure($"Error al cargar familias: {ex.Message}");
             Families = [];
         }
     }

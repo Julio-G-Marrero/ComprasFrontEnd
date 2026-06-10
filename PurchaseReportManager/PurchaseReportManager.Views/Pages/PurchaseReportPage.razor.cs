@@ -19,12 +19,18 @@ public sealed partial class PurchaseReportPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         Vm.StateChanged += HandleStateChanged;
+        Vm.OnFailure += HandleFailure;
         await Vm.InitializeAsync();
     }
 
     private async void HandleStateChanged()
     {
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleFailure(string message)
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private async Task HandleLoad()
@@ -51,5 +57,6 @@ public sealed partial class PurchaseReportPage : IDisposable
     public void Dispose()
     {
         Vm.StateChanged -= HandleStateChanged;
+        Vm.OnFailure -= HandleFailure;
     }
 }

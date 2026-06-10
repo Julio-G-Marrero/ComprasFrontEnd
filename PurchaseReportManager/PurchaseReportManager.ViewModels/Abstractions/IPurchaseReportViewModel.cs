@@ -28,6 +28,7 @@ public interface IPurchaseReportViewModel
 
     // Loading state
     event Action? StateChanged;
+    event Action<string>? OnFailure;
     bool IsLoading { get; }
     bool IsLoadingCatalog { get; }
     string? ErrorMessage { get; }
