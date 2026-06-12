@@ -21,26 +21,29 @@ internal sealed class PurchaseReportProxy(
     public async Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
         CancellationToken cancellationToken = default)
     {
+        HandlerRequestResult<IReadOnlyList<TenantOption>> result;
         try
         {
             using var response = await httpClient.GetAsync("/api/tenants", cancellationToken);
             response.EnsureSuccessStatusCode();
             var data = await response.Content
                 .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
-            return HandlerRequestResult<IReadOnlyList<TenantOption>>.Ok(
+            result = HandlerRequestResult<IReadOnlyList<TenantOption>>.Ok(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al obtener tenants");
-            return HandlerRequestResult<IReadOnlyList<TenantOption>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<TenantOption>>.Fail(ex.Message);
         }
+        return result;
     }
 
     public async Task<HandlerRequestResult<IReadOnlyList<string>>> GetFamiliesAsync(
         string tenantId,
         CancellationToken cancellationToken = default)
     {
+        HandlerRequestResult<IReadOnlyList<string>> result;
         try
         {
             using var request = TenantRequest(HttpMethod.Get, "/api/catalog/families", tenantId);
@@ -48,14 +51,15 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            return HandlerRequestResult<IReadOnlyList<string>>.Ok(
+            result = HandlerRequestResult<IReadOnlyList<string>>.Ok(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al obtener familias para tenant {TenantId}", tenantId);
-            return HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
         }
+        return result;
     }
 
     public async Task<HandlerRequestResult<IReadOnlyList<string>>> GetSubfamiliesAsync(
@@ -63,6 +67,7 @@ internal sealed class PurchaseReportProxy(
         string family,
         CancellationToken cancellationToken = default)
     {
+        HandlerRequestResult<IReadOnlyList<string>> result;
         try
         {
             var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(family)}";
@@ -71,14 +76,15 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            return HandlerRequestResult<IReadOnlyList<string>>.Ok(
+            result = HandlerRequestResult<IReadOnlyList<string>>.Ok(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al obtener subfamilias para tenant {TenantId} family {Family}", tenantId, family);
-            return HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
         }
+        return result;
     }
 
     public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
