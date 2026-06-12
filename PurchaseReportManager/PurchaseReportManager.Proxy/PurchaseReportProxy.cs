@@ -5,6 +5,7 @@ using Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PurchaseReportManager.Proxy.Abstractions;
+using PurchaseReportManager.Proxy.Adapters;
 using PurchaseReportManager.Proxy.Dtos;
 
 namespace PurchaseReportManager.Proxy;
@@ -113,7 +114,7 @@ internal sealed class PurchaseReportProxy(
             if (apiResponse.Data is null or { Count: 0 })
                 return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
 
-            var items = apiResponse.Data.Select(Map).ToList().AsReadOnly();
+            var items = apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly();
             var f = items[0];
             logger.LogInformation(
                 "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
@@ -160,7 +161,7 @@ internal sealed class PurchaseReportProxy(
                 return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
 
             return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
-                apiResponse.Data.Select(Map).ToList().AsReadOnly());
+                apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly());
         }
         catch (Exception ex)
         {
@@ -212,41 +213,4 @@ internal sealed class PurchaseReportProxy(
           .Append("&xyzXThreshold=").Append(xyzX.ToString("G", ic))
           .Append("&xyzYThreshold=").Append(xyzY.ToString("G", ic));
     }
-
-    private static PurchaseReportLine Map(PurchaseReportLineDto d) => new()
-    {
-        Sku = d.Sku,
-        Description = d.Description,
-        Family = d.Family,
-        SubFamily = d.SubFamily,
-        RequiresStock = d.RequiresStock,
-        EffectiveStock = d.EffectiveStock,
-        SalesPeriodQuantity = d.SalesPeriodQuantity,
-        DailyDemand = d.DailyDemand,
-        DailyStandardDeviation = d.DailyStandardDeviation,
-        CoefficientOfVariation = d.CoefficientOfVariation,
-        Abc = d.Abc,
-        Xyz = d.Xyz,
-        SupplierLeadTimeDays = d.SupplierLeadTimeDays,
-        ReviewFrequencyDays = d.ReviewFrequencyDays,
-        ProtectionPeriodDays = d.ProtectionPeriodDays,
-        SafetyStock = d.SafetyStock,
-        MinimumOperationalStock = d.MinimumOperationalStock,
-        Rop = d.Rop,
-        RotationTargetInventory = d.RotationTargetInventory,
-        FinalTargetInventory = d.FinalTargetInventory,
-        GrossQuantity = d.GrossQuantity,
-        UnitsPerPackage = d.UnitsPerPackage,
-        SuggestedPackages = d.SuggestedPackages,
-        SuggestedQuantity = d.SuggestedQuantity,
-        PurchaseReason = d.PurchaseReason,
-        AlertLevel = d.AlertLevel,
-        RequiresReview = d.RequiresReview,
-        ReviewReason = d.ReviewReason,
-        CurrentCoverageDays = d.CurrentCoverageDays,
-        ExcessInventory = d.ExcessInventory,
-        ExcessInventoryPercentage = d.ExcessInventoryPercentage,
-        InventoryStatus = d.InventoryStatus,
-        InventoryReason = d.InventoryReason
-    };
 }
