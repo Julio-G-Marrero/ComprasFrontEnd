@@ -4,6 +4,7 @@ using System.Text.Json;
 using Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PurchaseReportManager.Proxy.Abstractions;
 using PurchaseReportManager.Proxy.Dtos;
 
 namespace PurchaseReportManager.Proxy;

@@ -1,5 +1,7 @@
 using Domain;
 using PurchaseReportManager.Proxy;
+using PurchaseReportManager.Proxy.Abstractions;
+using PurchaseReportManager.ViewModels.Abstractions;
 
 namespace PurchaseReportManager.ViewModels;
 

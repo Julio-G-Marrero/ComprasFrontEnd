@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using PurchaseReportManager.ViewModels;
+using PurchaseReportManager.ViewModels.Abstractions;
 
 namespace PurchaseReportManager.Views.Components;
 

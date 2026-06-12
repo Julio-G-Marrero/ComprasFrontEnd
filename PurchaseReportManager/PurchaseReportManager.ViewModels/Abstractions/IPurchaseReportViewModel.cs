@@ -1,6 +1,6 @@
 using Domain;
 
-namespace PurchaseReportManager.ViewModels;
+namespace PurchaseReportManager.ViewModels.Abstractions;
 
 public interface IPurchaseReportViewModel
 {

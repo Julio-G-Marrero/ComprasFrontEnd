@@ -1,7 +1,7 @@
 using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using PurchaseReportManager.ViewModels;
+using PurchaseReportManager.ViewModels.Abstractions;
 
 namespace PurchaseReportManager.Views.Components;
 

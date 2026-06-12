@@ -1,6 +1,6 @@
 using Domain;
 
-namespace PurchaseReportManager.Proxy;
+namespace PurchaseReportManager.Proxy.Abstractions;
 
 public interface IPurchaseReportProxy
 {

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using PurchaseReportManager.ViewModels.Abstractions;
 
 namespace PurchaseReportManager.ViewModels;
 
