@@ -116,8 +116,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         get
         {
             var filtered = _items
-                .Where(x => !OnlyWithSuggestedPurchase || x.TieneSugerencia)
-                .Where(x => !OnlyCritical || x.EsCritico)
+                .Where(x => !OnlyWithSuggestedPurchase || x.HasSuggestion)
+                .Where(x => !OnlyCritical || x.IsCritical)
                 .Where(x => !OnlyRequiresReview || x.RequiresReview)
                 .Where(x => string.IsNullOrWhiteSpace(SearchText) || MatchesSearch(x));
             return SortItems(filtered).ToList().AsReadOnly();
@@ -160,7 +160,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             "inventory"    => Ord(items, x => x.InventoryStatus),
             _              => items
                                 .OrderByDescending(x => AlertOrder(x.AlertLevel))
-                                .ThenByDescending(x => x.TieneSugerencia)
+                                .ThenByDescending(x => x.HasSuggestion)
                                 .ThenByDescending(x => x.SuggestedQuantity),
         };
 
@@ -182,9 +182,9 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
 
     // Summary (computed over FilteredItems)
     public int TotalSkus => FilteredItems.Count;
-    public int SkusWithSuggestedPurchase => FilteredItems.Count(x => x.TieneSugerencia);
+    public int SkusWithSuggestedPurchase => FilteredItems.Count(x => x.HasSuggestion);
     public decimal TotalSuggestedQuantity => FilteredItems.Sum(x => x.SuggestedQuantity);
-    public int CriticalProducts => FilteredItems.Count(x => x.EsCritico);
+    public int CriticalProducts => FilteredItems.Count(x => x.IsCritical);
     public int ReviewProducts => FilteredItems.Count(x => x.RequiresReview);
     public decimal TotalSales => FilteredItems.Sum(x => x.SalesPeriodQuantity);
     public decimal TotalEffectiveStock => FilteredItems.Sum(x => x.EffectiveStock);

@@ -66,7 +66,7 @@ else
                         <td class="text-center"><span class="badge bg-secondary">@item.Xyz</span></td>
                         <td class="text-end">@item.UnitsPerPackage.ToString("N0")</td>
                         <td class="text-end">@item.SuggestedPackages.ToString("N0")</td>
-                        <td class="text-end fw-bold @(item.TieneSugerencia ? "text-primary" : "")">@item.SuggestedQuantity.ToString("N2")</td>
+                        <td class="text-end fw-bold @(item.HasSuggestion ? "text-primary" : "")">@item.SuggestedQuantity.ToString("N2")</td>
                         <td><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.PurchaseReason)</small></td>
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.AlertLevel))

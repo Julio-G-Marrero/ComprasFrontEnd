@@ -43,6 +43,6 @@ public sealed class PurchaseReportLine
     public string InventoryStatus { get; init; } = string.Empty;
     public string InventoryReason { get; init; } = string.Empty;
 
-    public bool EsCritico => AlertLevel.Equals("CRITICO", StringComparison.OrdinalIgnoreCase);
-    public bool TieneSugerencia => SuggestedQuantity > 0;
+    public bool IsCritical => AlertLevel.Equals("CRITICO", StringComparison.OrdinalIgnoreCase);
+    public bool HasSuggestion => SuggestedQuantity > 0;
 }
