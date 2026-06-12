@@ -20,7 +20,7 @@ public sealed partial class PurchaseReportPage : IDisposable
     {
         Vm.StateChanged += HandleStateChanged;
         Vm.OnFailure += HandleFailure;
-        await Vm.InitializeAsync();
+        await Vm.InitializeViewModel();
     }
 
     private async void HandleStateChanged()

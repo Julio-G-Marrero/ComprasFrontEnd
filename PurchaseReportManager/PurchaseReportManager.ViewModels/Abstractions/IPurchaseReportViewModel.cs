@@ -66,7 +66,7 @@ public interface IPurchaseReportViewModel
     decimal TotalEffectiveStock { get; }
 
     // Methods
-    Task InitializeAsync(CancellationToken cancellationToken = default);
+    Task InitializeViewModel(CancellationToken cancellationToken = default);
     Task OnTenantChangedAsync(CancellationToken cancellationToken = default);
     Task OnFamilyChangedAsync(CancellationToken cancellationToken = default);
     Task LoadAsync(CancellationToken cancellationToken = default);

@@ -191,7 +191,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     public decimal TotalSales => FilteredItems.Sum(x => x.SalesPeriodQuantity);
     public decimal TotalEffectiveStock => FilteredItems.Sum(x => x.EffectiveStock);
 
-    public async Task InitializeAsync(CancellationToken cancellationToken = default)
+    public async Task InitializeViewModel(CancellationToken cancellationToken = default)
     {
         CatalogErrorMessage = null;
         IsLoadingCatalog = true;
