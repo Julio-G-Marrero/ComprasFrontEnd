@@ -182,7 +182,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
 
     // Summary (computed over FilteredItems)
     public int TotalSkus => FilteredItems.Count;
-    public int SkusConCompraSugerida => FilteredItems.Count(x => x.TieneSugerencia);
+    public int SkusWithSuggestedPurchase => FilteredItems.Count(x => x.TieneSugerencia);
     public decimal TotalSuggestedQuantity => FilteredItems.Sum(x => x.SuggestedQuantity);
     public int CriticalProducts => FilteredItems.Count(x => x.EsCritico);
     public int ReviewProducts => FilteredItems.Count(x => x.RequiresReview);

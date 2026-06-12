@@ -58,7 +58,7 @@ public interface IPurchaseReportViewModel
 
     // KPIs / Summary
     int TotalSkus { get; }
-    int SkusConCompraSugerida { get; }
+    int SkusWithSuggestedPurchase { get; }
     decimal TotalSuggestedQuantity { get; }
     int CriticalProducts { get; }
     int ReviewProducts { get; }
