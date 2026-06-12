@@ -12,9 +12,9 @@
 
     <table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:10px;">
         <tr>
-            <td style="padding:2px 10px 2px 0;white-space:nowrap;"><strong>Sucursal:</strong> @SucursalName</td>
-            <td style="padding:2px 10px;white-space:nowrap;"><strong>Familia:</strong> @(string.IsNullOrEmpty(Familia) || Familia == "Todas" ? "Todas" : Familia)</td>
-            <td style="padding:2px 10px;white-space:nowrap;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(Subfamilia) ? "Todas" : Subfamilia)</td>
+            <td style="padding:2px 10px 2px 0;white-space:nowrap;"><strong>Sucursal:</strong> @BranchName</td>
+            <td style="padding:2px 10px;white-space:nowrap;"><strong>Familia:</strong> @(string.IsNullOrEmpty(Family) || Family == "Todas" ? "Todas" : Family)</td>
+            <td style="padding:2px 10px;white-space:nowrap;"><strong>SubFamilia:</strong> @(string.IsNullOrEmpty(SubFamily) ? "Todas" : SubFamily)</td>
             <td style="padding:2px 0;text-align:right;white-space:nowrap;">
                 <strong>SKUs:</strong> @Items.Count &nbsp;&nbsp;
                 <strong>Cant. total:</strong> @Items.Sum(x => x.SuggestedQuantity).ToString("N0")
