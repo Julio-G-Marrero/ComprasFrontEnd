@@ -100,6 +100,7 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
+        HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
         try
         {
             var url = BuildReportUrl(family, subFamily, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
@@ -114,25 +115,28 @@ internal sealed class PurchaseReportProxy(
             {
                 var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
                 logger.LogError("GetPurchaseReportAsync: {ErrorMessage}", msg);
-                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
             }
-
-            if (apiResponse.Data is null or { Count: 0 })
-                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
-
-            var items = apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly();
-            var f = items[0];
-            logger.LogInformation(
-                "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
-                items.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
-
-            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(items);
+            else if (apiResponse.Data is null or { Count: 0 })
+            {
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
+            }
+            else
+            {
+                var items = apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly();
+                var f = items[0];
+                logger.LogInformation(
+                    "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
+                    items.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(items);
+            }
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al obtener reporte de compra para tenant {TenantId} family {Family}", tenantId, family);
-            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
         }
+        return result;
     }
 
     public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetAllPurchaseReportAsync(
@@ -146,6 +150,7 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
+        HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
         try
         {
             var url = BuildParamsUrl("/api/reports/purchase/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
@@ -160,20 +165,24 @@ internal sealed class PurchaseReportProxy(
             {
                 var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
                 logger.LogError("GetAllPurchaseReportAsync: {ErrorMessage}", msg);
-                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
             }
-
-            if (apiResponse.Data is null or { Count: 0 })
-                return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
-
-            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
-                apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly());
+            else if (apiResponse.Data is null or { Count: 0 })
+            {
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
+            }
+            else
+            {
+                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
+                    apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly());
+            }
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al obtener reporte completo de compra para tenant {TenantId}", tenantId);
-            return HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
         }
+        return result;
     }
 
     private HttpRequestMessage TenantRequest(HttpMethod method, string url, string tenantId)
