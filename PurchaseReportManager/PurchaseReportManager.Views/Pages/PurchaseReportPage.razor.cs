@@ -28,10 +28,8 @@ public sealed partial class PurchaseReportPage : IDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    private void HandleFailure(string message)
-    {
-        _ = InvokeAsync(StateHasChanged);
-    }
+    private async void HandleFailure(string message) =>
+        await InvokeAsync(StateHasChanged);
 
     private async Task HandleLoad()
     {
