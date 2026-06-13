@@ -320,18 +320,13 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
 
     private async Task LoadFamiliesAsync(CancellationToken cancellationToken)
     {
-        try
+        var result = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
+        if (result.IsSuccess)
+            Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
+        else
         {
-            var result = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
-            if (result.IsSuccess)
-                Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
-            else
-                NotifyCatalogFailure($"Error al cargar familias: {result.ErrorMessage}");
-        }
-        catch (Exception ex)
-        {
-            NotifyCatalogFailure($"Error al cargar familias: {ex.Message}");
             Families = [];
+            NotifyCatalogFailure($"Error al cargar familias: {result.ErrorMessage}");
         }
     }
 
