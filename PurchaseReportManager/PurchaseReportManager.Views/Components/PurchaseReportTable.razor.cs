@@ -1,3 +1,4 @@
+using Common.Views.Helpers;
 using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -73,21 +74,6 @@ public partial class PurchaseReportTable
         _      => nivel
     };
 
-    private static string InventarioBadgeClass(string estado) => estado.ToUpperInvariant() switch
-    {
-        "SALUDABLE"           => "badge bg-success",
-        "BAJO_OBJETIVO"       => "badge bg-warning",
-        "SOBRESTOCK"          => "badge bg-dark",
-        "SIN_VENTA_CON_STOCK" => "badge bg-secondary",
-        _                     => "badge bg-light text-dark"
-    };
-
-    private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
-    {
-        "SALUDABLE"           => "Óptimo",
-        "BAJO_OBJETIVO"       => "Bajo objetivo",
-        "SOBRESTOCK"          => "Sobrestock",
-        "SIN_VENTA_CON_STOCK" => "Sin venta c/stock",
-        _                     => estado
-    };
+    private static string InventarioBadgeClass(string estado) => InventoryDisplayHelper.BadgeClass(estado);
+    private static string InventarioLabel(string estado)     => InventoryDisplayHelper.Label(estado);
 }

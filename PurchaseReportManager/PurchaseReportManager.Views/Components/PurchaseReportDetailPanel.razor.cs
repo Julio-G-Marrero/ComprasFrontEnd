@@ -1,3 +1,4 @@
+using Common.Views.Helpers;
 using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -10,14 +11,7 @@ public partial class PurchaseReportDetailPanel
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public int WindowDays { get; set; } = 45;
 
-    private static string InventarioLabel(string estado) => estado.ToUpperInvariant() switch
-    {
-        "SALUDABLE"           => "Óptimo",
-        "BAJO_OBJETIVO"       => "Bajo objetivo",
-        "SOBRESTOCK"          => "Sobrestock",
-        "SIN_VENTA_CON_STOCK" => "Sin venta con stock",
-        _                     => string.IsNullOrEmpty(estado) ? "-" : estado
-    };
+    private static string InventarioLabel(string estado) => InventoryDisplayHelper.Label(estado);
 
     private static RenderFragment Row(string label, string value) => __builder =>
     {
