@@ -1,4 +1,4 @@
-namespace PurchaseReportManager.ViewModels;
+namespace Common.Views.Helpers;
 
 public static class LegacyTextNormalizer
 {

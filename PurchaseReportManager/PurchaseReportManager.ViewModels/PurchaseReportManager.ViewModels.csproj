@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.Views\Common.Views.csproj" />
     <ProjectReference Include="..\..\Common\Domain\Domain.csproj" />
     <ProjectReference Include="..\PurchaseReportManager.Proxy\PurchaseReportManager.Proxy.csproj" />
   </ItemGroup>

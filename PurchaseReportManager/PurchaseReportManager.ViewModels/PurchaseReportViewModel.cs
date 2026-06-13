@@ -1,3 +1,4 @@
+using Common.Views.Helpers;
 using Domain;
 using PurchaseReportManager.Proxy;
 using PurchaseReportManager.Proxy.Abstractions;
