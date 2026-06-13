@@ -299,18 +299,16 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             if (result.IsSuccess)
                 _items = result.Data ?? [];
             else
+            {
+                _items = [];
                 NotifyFailure(result.ErrorMessage);
+            }
 
             SelectedItem = null;
             SearchText = string.Empty;
             SortColumn = "priority";
             SortAscending = false;
             ResetPagination();
-        }
-        catch (Exception ex)
-        {
-            NotifyFailure(ex.Message);
-            _items = [];
         }
         finally
         {
