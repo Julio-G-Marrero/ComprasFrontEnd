@@ -203,10 +203,6 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             else
                 NotifyCatalogFailure($"Error al cargar tenants: {result.ErrorMessage}");
         }
-        catch (Exception ex)
-        {
-            NotifyCatalogFailure($"Error al cargar tenants: {ex.Message}");
-        }
         finally
         {
             IsLoadingCatalog = false;
@@ -260,10 +256,6 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                     Subfamilies = result.Data ?? [];
                 else
                     NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
-            }
-            catch (Exception ex)
-            {
-                NotifyCatalogFailure($"Error al cargar subfamilias: {ex.Message}");
             }
             finally
             {
