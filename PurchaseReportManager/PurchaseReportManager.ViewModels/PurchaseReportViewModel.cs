@@ -249,28 +249,26 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         ResetPagination();
 
         if (SelectedFamily == AllFamilies || string.IsNullOrEmpty(SelectedFamily))
-        {
             SelectedFamily = AllFamilies;
-            await LoadAsync(cancellationToken);
-            return;
-        }
-
-        IsLoadingCatalog = true;
-        try
+        else
         {
-            var result = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamily, cancellationToken);
-            if (result.IsSuccess)
-                Subfamilies = result.Data ?? [];
-            else
-                NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
-        }
-        catch (Exception ex)
-        {
-            NotifyCatalogFailure($"Error al cargar subfamilias: {ex.Message}");
-        }
-        finally
-        {
-            IsLoadingCatalog = false;
+            IsLoadingCatalog = true;
+            try
+            {
+                var result = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamily, cancellationToken);
+                if (result.IsSuccess)
+                    Subfamilies = result.Data ?? [];
+                else
+                    NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
+            }
+            catch (Exception ex)
+            {
+                NotifyCatalogFailure($"Error al cargar subfamilias: {ex.Message}");
+            }
+            finally
+            {
+                IsLoadingCatalog = false;
+            }
         }
 
         await LoadAsync(cancellationToken);
