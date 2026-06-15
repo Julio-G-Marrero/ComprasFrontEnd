@@ -5,6 +5,9 @@ namespace PurchaseReportManager.Proxy.Adapters;
 
 internal static class PurchaseReportLineAdapter
 {
+    internal static List<PurchaseReportLine> ToModels(IEnumerable<PurchaseReportLineDto> dtos) =>
+        dtos.Select(ToModel).ToList();
+
     internal static PurchaseReportLine ToModel(PurchaseReportLineDto dto) => new()
     {
         Sku = dto.Sku,

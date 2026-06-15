@@ -123,7 +123,7 @@ internal sealed class PurchaseReportProxy(
             }
             else
             {
-                var items = apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly();
+                var items = PurchaseReportLineAdapter.ToModels(apiResponse.Data).AsReadOnly();
                 var f = items[0];
                 logger.LogInformation(
                     "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
@@ -174,7 +174,7 @@ internal sealed class PurchaseReportProxy(
             else
             {
                 result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
-                    apiResponse.Data.Select(PurchaseReportLineAdapter.ToModel).ToList().AsReadOnly());
+                    PurchaseReportLineAdapter.ToModels(apiResponse.Data).AsReadOnly());
             }
         }
         catch (Exception ex)
