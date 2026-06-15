@@ -32,7 +32,7 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener tenants");
+            logger.LogError(ex, "Error fetching tenants");
             result = HandlerRequestResult<IReadOnlyList<TenantOption>>.Fail(ex.Message);
         }
         return result;
@@ -55,7 +55,7 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener familias para tenant {TenantId}", tenantId);
+            logger.LogError(ex, "Error fetching families for tenant {TenantId}", tenantId);
             result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
         }
         return result;
@@ -80,7 +80,7 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener subfamilias para tenant {TenantId} family {Family}", tenantId, family);
+            logger.LogError(ex, "Error fetching subfamilies for tenant {TenantId} family {Family}", tenantId, family);
             result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
         }
         return result;
@@ -112,7 +112,7 @@ internal sealed class PurchaseReportProxy(
 
             if (apiResponse is null || !apiResponse.Success)
             {
-                var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
+                var msg = apiResponse?.Message ?? "The API returned a failed result.";
                 logger.LogError("GetPurchaseReportAsync: {ErrorMessage}", msg);
                 result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
             }
@@ -125,14 +125,14 @@ internal sealed class PurchaseReportProxy(
                 var items = PurchaseReportLineAdapter.ToModels(apiResponse.Data).AsReadOnly();
                 var f = items[0];
                 logger.LogInformation(
-                    "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={Ventas} | SuggestedQuantity={Sugerida} | AlertLevel={Alerta}",
+                    "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={SalesPeriodQuantity} | SuggestedQuantity={SuggestedQuantity} | AlertLevel={AlertLevel}",
                     items.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
                 result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(items);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener reporte de compra para tenant {TenantId} family {Family}", tenantId, family);
+            logger.LogError(ex, "Error fetching purchase report for tenant {TenantId} family {Family}", tenantId, family);
             result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
         }
         return result;
@@ -162,7 +162,7 @@ internal sealed class PurchaseReportProxy(
 
             if (apiResponse is null || !apiResponse.Success)
             {
-                var msg = apiResponse?.Message ?? "La API devolvió un resultado fallido.";
+                var msg = apiResponse?.Message ?? "The API returned a failed result.";
                 logger.LogError("GetAllPurchaseReportAsync: {ErrorMessage}", msg);
                 result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
             }
@@ -178,7 +178,7 @@ internal sealed class PurchaseReportProxy(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al obtener reporte completo de compra para tenant {TenantId}", tenantId);
+            logger.LogError(ex, "Error fetching all purchase report for tenant {TenantId}", tenantId);
             result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
         }
         return result;
