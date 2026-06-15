@@ -1,4 +1,5 @@
 using Domain;
+using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.ViewModels.Abstractions;
 
@@ -35,10 +36,10 @@ public interface IPurchaseReportViewModel
     string? CatalogErrorMessage { get; }
 
     // Report data
-    IReadOnlyList<PurchaseReportLine> Items { get; }
-    PurchaseReportLine? SelectedItem { get; }
-    IReadOnlyList<PurchaseReportLine> FilteredItems { get; }
-    IReadOnlyList<PurchaseReportLine> PagedItems { get; }
+    IReadOnlyList<PurchaseReportLineModel> Items { get; }
+    PurchaseReportLineModel? SelectedItem { get; }
+    IReadOnlyList<PurchaseReportLineModel> FilteredItems { get; }
+    IReadOnlyList<PurchaseReportLineModel> PagedItems { get; }
 
     // Local filters
     bool OnlyWithSuggestedPurchase { get; set; }
@@ -79,6 +80,6 @@ public interface IPurchaseReportViewModel
     void ToggleOnlyCritical();
     void ToggleOnlyRequiresReview();
     void ClearFilters();
-    void SelectItem(PurchaseReportLine item);
+    void SelectItem(PurchaseReportLineModel item);
     void ClearSelection();
 }

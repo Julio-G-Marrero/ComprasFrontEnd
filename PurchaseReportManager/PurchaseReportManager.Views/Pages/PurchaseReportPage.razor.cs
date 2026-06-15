@@ -1,7 +1,7 @@
-using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using PurchaseReportManager.ViewModels.Abstractions;
+using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.Views.Pages;
 
@@ -10,7 +10,7 @@ public sealed partial class PurchaseReportPage : IDisposable
     [Inject] private IPurchaseReportViewModel Vm { get; set; } = default!;
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
-    private IReadOnlyList<PurchaseReportLine> PrintItems =>
+    private IReadOnlyList<PurchaseReportLineModel> PrintItems =>
         Vm.FilteredItems.Where(x => x.SuggestedQuantity > 0 || x.SuggestedPackages > 0).ToList().AsReadOnly();
 
     private string TenantDisplayName =>
@@ -49,7 +49,7 @@ public sealed partial class PurchaseReportPage : IDisposable
         await JS.InvokeVoidAsync("print");
     }
 
-    private void HandleRowClick(PurchaseReportLine item) => Vm.SelectItem(item);
+    private void HandleRowClick(PurchaseReportLineModel item) => Vm.SelectItem(item);
     private void HandleCloseDetail() => Vm.ClearSelection();
 
     public void Dispose()

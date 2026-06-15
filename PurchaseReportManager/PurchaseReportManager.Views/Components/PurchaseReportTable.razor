@@ -71,7 +71,7 @@ else
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.AlertLevel))
                             {
-                                <span class="@AlertBadgeClass(item.AlertLevel)">@AlertDisplayText(item.AlertLevel)</span>
+                                <span class="@item.AlertBadgeClass">@item.AlertDisplayText</span>
                             }
                         </td>
                         <td class="text-center">

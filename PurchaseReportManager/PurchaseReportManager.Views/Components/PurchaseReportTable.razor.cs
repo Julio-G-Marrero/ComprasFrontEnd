@@ -1,15 +1,15 @@
 using Common.Views.Helpers;
-using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using PurchaseReportManager.ViewModels.Abstractions;
+using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.Views.Components;
 
 public partial class PurchaseReportTable
 {
     [Parameter] public IPurchaseReportViewModel Vm { get; set; } = default!;
-    [Parameter] public EventCallback<PurchaseReportLine> OnRowClick { get; set; }
+    [Parameter] public EventCallback<PurchaseReportLineModel> OnRowClick { get; set; }
     [Parameter] public EventCallback OnPageChanged { get; set; }
 
     private RenderFragment SortHeader(string label, string col, string thClass) => __builder =>
@@ -58,21 +58,6 @@ public partial class PurchaseReportTable
         Vm.GoToNextPage();
         await OnPageChanged.InvokeAsync();
     }
-
-    private static string AlertBadgeClass(string nivel) => nivel.ToUpperInvariant() switch
-    {
-        "CRITICO" => "badge bg-danger",
-        "ALTO"    => "badge bg-warning",
-        "MEDIO"   => "badge bg-info",
-        "BAJO"    => "text-muted small",
-        _         => "badge bg-secondary"
-    };
-
-    private static string AlertDisplayText(string nivel) => nivel.ToUpperInvariant() switch
-    {
-        "BAJO" => "N/A",
-        _      => nivel
-    };
 
     private static string InventarioBadgeClass(string estado) => InventoryDisplayHelper.BadgeClass(estado);
     private static string InventarioLabel(string estado)     => InventoryDisplayHelper.Label(estado);

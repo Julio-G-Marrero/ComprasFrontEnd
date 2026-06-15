@@ -3,6 +3,7 @@ using Domain;
 using PurchaseReportManager.Proxy;
 using PurchaseReportManager.Proxy.Abstractions;
 using PurchaseReportManager.ViewModels.Abstractions;
+using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.ViewModels;
 
@@ -25,7 +26,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         (2.00m, 4.00m),
     ];
 
-    private IReadOnlyList<PurchaseReportLine> _items = [];
+    private IReadOnlyList<PurchaseReportLineModel> _items = [];
 
     // Catalogs
     public IReadOnlyList<TenantOption> Tenants { get; private set; } = [];
@@ -85,8 +86,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     public string? CatalogErrorMessage { get; private set; }
 
     // Report data
-    public IReadOnlyList<PurchaseReportLine> Items => _items;
-    public PurchaseReportLine? SelectedItem { get; private set; }
+    public IReadOnlyList<PurchaseReportLineModel> Items => _items;
+    public PurchaseReportLineModel? SelectedItem { get; private set; }
 
     // Local filters
     public bool OnlyWithSuggestedPurchase { get; set; }
@@ -114,7 +115,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     public const int PageSize = 20;
     public int CurrentPage { get; private set; } = 1;
 
-    public IReadOnlyList<PurchaseReportLine> FilteredItems
+    public IReadOnlyList<PurchaseReportLineModel> FilteredItems
     {
         get
         {
@@ -127,7 +128,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         }
     }
 
-    private bool MatchesSearch(PurchaseReportLine x)
+    private bool MatchesSearch(PurchaseReportLineModel x)
     {
         var q = SearchText;
         var inventoryAlias = x.InventoryStatus.ToUpperInvariant() == "SALUDABLE" ? "óptimo" : string.Empty;
@@ -147,7 +148,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             || (!string.IsNullOrEmpty(inventoryAlias) && inventoryAlias.Contains(q, StringComparison.OrdinalIgnoreCase));
     }
 
-    private IEnumerable<PurchaseReportLine> SortItems(IEnumerable<PurchaseReportLine> items) =>
+    private IEnumerable<PurchaseReportLineModel> SortItems(IEnumerable<PurchaseReportLineModel> items) =>
         SortColumn switch
         {
             "sku"          => Ord(items, x => x.Sku),
@@ -167,8 +168,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                                 .ThenByDescending(x => x.SuggestedQuantity),
         };
 
-    private IOrderedEnumerable<PurchaseReportLine> Ord<T>(
-        IEnumerable<PurchaseReportLine> items, Func<PurchaseReportLine, T> key) where T : IComparable<T> =>
+    private IOrderedEnumerable<PurchaseReportLineModel> Ord<T>(
+        IEnumerable<PurchaseReportLineModel> items, Func<PurchaseReportLineModel, T> key) where T : IComparable<T> =>
         SortAscending ? items.OrderBy(key) : items.OrderByDescending(key);
 
     private static int AlertOrder(string nivel) => nivel.ToUpperInvariant() switch
@@ -180,7 +181,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     public int PagedFrom => FilteredItems.Count == 0 ? 0 : (CurrentPage - 1) * PageSize + 1;
     public int PagedTo => Math.Min(CurrentPage * PageSize, FilteredItems.Count);
 
-    public IReadOnlyList<PurchaseReportLine> PagedItems =>
+    public IReadOnlyList<PurchaseReportLineModel> PagedItems =>
         FilteredItems.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList().AsReadOnly();
 
     // Summary (computed over FilteredItems)
@@ -298,7 +299,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             }
 
             if (result.IsSuccess)
-                _items = result.Data ?? [];
+                _items = PurchaseReportLineModel.FromDomain(result.Data ?? []).AsReadOnly();
             else
             {
                 _items = [];
@@ -346,6 +347,6 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         ResetPagination();
     }
 
-    public void SelectItem(PurchaseReportLine item) => SelectedItem = item;
+    public void SelectItem(PurchaseReportLineModel item) => SelectedItem = item;
     public void ClearSelection() => SelectedItem = null;
 }

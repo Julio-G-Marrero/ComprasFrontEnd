@@ -1,13 +1,13 @@
 using Common.Views.Helpers;
-using Domain;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.Views.Components;
 
 public partial class PurchaseReportDetailPanel
 {
-    [Parameter] public PurchaseReportLine? Item { get; set; }
+    [Parameter] public PurchaseReportLineModel? Item { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public int WindowDays { get; set; } = 45;
 
