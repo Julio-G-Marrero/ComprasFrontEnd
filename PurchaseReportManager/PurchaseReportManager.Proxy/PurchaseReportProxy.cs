@@ -16,7 +16,6 @@ internal sealed class PurchaseReportProxy(
     ILogger<PurchaseReportProxy> logger) : IPurchaseReportProxy
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
-    private readonly PurchaseReportProxyOptions _options = options.Value;
 
     public async Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
         CancellationToken cancellationToken = default)
@@ -189,7 +188,7 @@ internal sealed class PurchaseReportProxy(
     {
         var request = new HttpRequestMessage(method, url);
         request.Headers.Add("X-Tenant-Id", tenantId);
-        request.Headers.Add("X-Application-Id", _options.ApplicationId);
+        request.Headers.Add("X-Application-Id", options.Value.ApplicationId);
         return request;
     }
 
