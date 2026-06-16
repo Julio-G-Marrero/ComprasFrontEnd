@@ -1,5 +1,5 @@
 @page "/reporte-compras"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Modulo de Compras</PageTitle>
 
@@ -79,6 +79,12 @@
                     <PurchaseReportDetailPanel Item="Vm.SelectedItem" OnClose="HandleCloseDetail" WindowDays="Vm.WindowDays" />
                 </div>
             }
+        </div>
+    }
+    else
+    {
+        <div class="text-center text-muted my-5">
+            <p class="fs-5">No se encontraron resultados para esta consulta. Intenta nuevamente.</p>
         </div>
     }
 </div>

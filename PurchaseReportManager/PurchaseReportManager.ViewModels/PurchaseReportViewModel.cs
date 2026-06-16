@@ -82,7 +82,12 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         private set { _isLoading = value; StateChanged?.Invoke(); }
     }
 
-    public bool IsLoadingCatalog { get; private set; }
+    private bool _isLoadingCatalog;
+    public bool IsLoadingCatalog
+    {
+        get => _isLoadingCatalog;
+        private set { _isLoadingCatalog = value; StateChanged?.Invoke(); }
+    }
     public string? ErrorMessage { get; private set; }
     public string? CatalogErrorMessage { get; private set; }
 
@@ -307,6 +312,16 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                 NotifyFailure(result.ErrorMessage);
             }
 
+            SelectedItem = null;
+            SearchText = string.Empty;
+            SortColumn = "priority";
+            SortAscending = false;
+            ResetPagination();
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _items = [];
+            NotifyFailure(ex.Message);
             SelectedItem = null;
             SearchText = string.Empty;
             SortColumn = "priority";
