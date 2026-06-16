@@ -1,39 +1,37 @@
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using Domain;
+using Domain.Dtos;
+using Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PurchaseReportManager.Proxy.Abstractions;
-using PurchaseReportManager.Proxy.Adapters;
-using PurchaseReportManager.Proxy.Dtos;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace PurchaseReportManager.Proxy;
 
 internal sealed class PurchaseReportProxy(
-    HttpClient httpClient,
-    IOptions<PurchaseReportProxyOptions> options,
+    HttpClient httpClient, IOptions<PurchaseReportProxyOptions> options,
     ILogger<PurchaseReportProxy> logger) : IPurchaseReportProxy
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<TenantInfoDto>>> GetTenantsAsync(
         CancellationToken cancellationToken = default)
     {
-        HandlerRequestResult<IReadOnlyList<TenantOption>> result;
+        HandlerRequestResult<IReadOnlyList<TenantInfoDto>> result;
         try
         {
             using var response = await httpClient.GetAsync("/api/tenants", cancellationToken);
             response.EnsureSuccessStatusCode();
             var data = await response.Content
-                .ReadFromJsonAsync<List<TenantOption>>(JsonOptions, cancellationToken);
-            result = HandlerRequestResult<IReadOnlyList<TenantOption>>.Ok(
+                .ReadFromJsonAsync<List<TenantInfoDto>>(JsonOptions, cancellationToken);
+            result = HandlerRequestResult<IReadOnlyList<TenantInfoDto>>.SuccessResult(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error fetching tenants");
-            result = HandlerRequestResult<IReadOnlyList<TenantOption>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<TenantInfoDto>>.ErrorResult(ex.Message);
         }
         return result;
     }
@@ -50,13 +48,13 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            result = HandlerRequestResult<IReadOnlyList<string>>.Ok(
+            result = HandlerRequestResult<IReadOnlyList<string>>.SuccessResult(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error fetching families for tenant {TenantId}", tenantId);
-            result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<string>>.ErrorResult(ex.Message);
         }
         return result;
     }
@@ -75,18 +73,18 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
             var data = await response.Content
                 .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            result = HandlerRequestResult<IReadOnlyList<string>>.Ok(
+            result = HandlerRequestResult<IReadOnlyList<string>>.SuccessResult(
                 data is null ? [] : data.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error fetching subfamilies for tenant {TenantId} family {Family}", tenantId, family);
-            result = HandlerRequestResult<IReadOnlyList<string>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<string>>.ErrorResult(ex.Message);
         }
         return result;
     }
 
-    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>> GetPurchaseReportAsync(
         string tenantId,
         string family,
         string? subFamily,
@@ -99,7 +97,7 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
+        HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>> result;
         try
         {
             var url = BuildReportUrl(family, subFamily, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
@@ -108,37 +106,19 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
 
             var apiResponse = await response.Content
-                .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
+                .ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
 
-            if (apiResponse is null || !apiResponse.Success)
-            {
-                var msg = apiResponse?.Message ?? "The API returned a failed result.";
-                logger.LogError("GetPurchaseReportAsync: {ErrorMessage}", msg);
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
-            }
-            else if (apiResponse.Data is null or { Count: 0 })
-            {
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
-            }
-            else
-            {
-                var items = PurchaseReportLineAdapter.ToModels(apiResponse.Data).AsReadOnly();
-                var f = items[0];
-                logger.LogInformation(
-                    "GetPurchaseReportAsync OK — items={Count} | SKU={Sku} | SalesPeriodQuantity={SalesPeriodQuantity} | SuggestedQuantity={SuggestedQuantity} | AlertLevel={AlertLevel}",
-                    items.Count, f.Sku, f.SalesPeriodQuantity, f.SuggestedQuantity, f.AlertLevel);
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(items);
-            }
+            result = apiResponse;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error fetching purchase report for tenant {TenantId} family {Family}", tenantId, family);
-            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>.ErrorResult(ex.Message);
         }
         return result;
     }
 
-    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetAllPurchaseReportAsync(
+    public async Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>> GetAllPurchaseReportAsync(
         string tenantId,
         int windowDays,
         int reviewFrequencyDays,
@@ -149,7 +129,7 @@ internal sealed class PurchaseReportProxy(
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default)
     {
-        HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
+        HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>> result;
         try
         {
             var url = BuildParamsUrl("/api/reports/purchase/all", windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
@@ -158,28 +138,14 @@ internal sealed class PurchaseReportProxy(
             response.EnsureSuccessStatusCode();
 
             var apiResponse = await response.Content
-                .ReadFromJsonAsync<ApiResponseDto<List<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
+                .ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
 
-            if (apiResponse is null || !apiResponse.Success)
-            {
-                var msg = apiResponse?.Message ?? "The API returned a failed result.";
-                logger.LogError("GetAllPurchaseReportAsync: {ErrorMessage}", msg);
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(msg);
-            }
-            else if (apiResponse.Data is null or { Count: 0 })
-            {
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok([]);
-            }
-            else
-            {
-                result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Ok(
-                    PurchaseReportLineAdapter.ToModels(apiResponse.Data).AsReadOnly());
-            }
+            result = apiResponse;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error fetching all purchase report for tenant {TenantId}", tenantId);
-            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>.Fail(ex.Message);
+            result = HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>.ErrorResult(ex.Message);
         }
         return result;
     }

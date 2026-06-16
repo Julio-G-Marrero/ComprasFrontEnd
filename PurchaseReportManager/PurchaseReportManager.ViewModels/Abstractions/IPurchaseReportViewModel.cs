@@ -1,4 +1,6 @@
-using Domain;
+
+using Domain.Dtos;
+
 using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.ViewModels.Abstractions;
@@ -10,7 +12,7 @@ public interface IPurchaseReportViewModel
     IReadOnlyList<string> XyzPresetNames { get; }
 
     // Catalogs
-    IReadOnlyList<TenantOption> Tenants { get; }
+    IReadOnlyList<TenantInfoDto> Tenants { get; }
     IReadOnlyList<string> Families { get; }
     IReadOnlyList<string> Subfamilies { get; }
 

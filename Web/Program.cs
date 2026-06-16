@@ -4,7 +4,7 @@ using Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPurchaseReportManagerProxy(builder.Configuration);
+builder.Services.AddPurchaseReportManagerProxy(options => builder.Configuration.GetSection(PurchaseReportProxyOptions.Section).Bind(options));
 builder.Services.AddPurchaseReportManagerViewModels();
 
 // Add services to the container.

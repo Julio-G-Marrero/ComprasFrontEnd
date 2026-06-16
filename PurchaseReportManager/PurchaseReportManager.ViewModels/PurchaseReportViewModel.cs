@@ -1,8 +1,9 @@
 using Common.Views.Helpers;
-using Domain;
-using PurchaseReportManager.Proxy;
+using Domain.Dtos;
+using Domain.ValueObjects;
 using PurchaseReportManager.Proxy.Abstractions;
 using PurchaseReportManager.ViewModels.Abstractions;
+using PurchaseReportManager.ViewModels.Adapters;
 using PurchaseReportManager.ViewModels.Models;
 
 namespace PurchaseReportManager.ViewModels;
@@ -29,7 +30,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     private IReadOnlyList<PurchaseReportLineModel> _items = [];
 
     // Catalogs
-    public IReadOnlyList<TenantOption> Tenants { get; private set; } = [];
+    public IReadOnlyList<TenantInfoDto> Tenants { get; private set; } = [];
     public IReadOnlyList<string> Families { get; private set; } = [];
     public IReadOnlyList<string> Subfamilies { get; private set; } = [];
 
@@ -200,7 +201,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         try
         {
             var result = await proxy.GetTenantsAsync(cancellationToken);
-            if (result.IsSuccess)
+            if (result.Success)
                 Tenants = result.Data ?? [];
             else
                 NotifyCatalogFailure($"Error al cargar tenants: {result.ErrorMessage}");
@@ -254,7 +255,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             try
             {
                 var result = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamily, cancellationToken);
-                if (result.IsSuccess)
+                if (result.Success)
                     Subfamilies = result.Data ?? [];
                 else
                     NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
@@ -278,7 +279,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         IsLoading = true;
         try
         {
-            HandlerRequestResult<IReadOnlyList<PurchaseReportLine>> result;
+            HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>> result;
 
             if (SelectedFamily == AllFamilies || string.IsNullOrWhiteSpace(SelectedFamily))
             {
@@ -298,8 +299,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                     XyzXThreshold, XyzYThreshold, cancellationToken);
             }
 
-            if (result.IsSuccess)
-                _items = PurchaseReportLineModel.FromDomain(result.Data ?? []).AsReadOnly();
+            if (result.Success)
+                _items = (IReadOnlyList<PurchaseReportLineModel>)PurchaseReportLineAdapter.ToModels(result.Data ?? []).AsReadOnly();
             else
             {
                 _items = [];
@@ -321,7 +322,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     private async Task LoadFamiliesAsync(CancellationToken cancellationToken)
     {
         var result = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
-        if (result.IsSuccess)
+        if (result.Success)
             Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
         else
         {

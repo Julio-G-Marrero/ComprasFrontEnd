@@ -7,17 +7,16 @@ namespace PurchaseReportManager.Proxy;
 public static class DependencyContainer
 {
     public static IServiceCollection AddPurchaseReportManagerProxy(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services, Action<PurchaseReportProxyOptions> configureOptions)
     {
-        services.Configure<PurchaseReportProxyOptions>(
-            configuration.GetSection(PurchaseReportProxyOptions.Section));
+        PurchaseReportProxyOptions Options = new();
+        configureOptions(Options);
 
         services.AddHttpClient<IPurchaseReportProxy, PurchaseReportProxy>(client =>
         {
-            client.BaseAddress = new Uri(
-                configuration["ApiSettings:BaseUrl"]
+            client.BaseAddress = new Uri(Options.BaseUrl
                 ?? throw new InvalidOperationException("ApiSettings:BaseUrl no está configurado."));
+            client.Timeout = TimeSpan.FromMinutes(4);
         });
 
         return services;

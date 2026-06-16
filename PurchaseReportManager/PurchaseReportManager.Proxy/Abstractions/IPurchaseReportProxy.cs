@@ -1,10 +1,12 @@
 using Domain;
+using Domain.Dtos;
+using Domain.ValueObjects;
 
 namespace PurchaseReportManager.Proxy.Abstractions;
 
 public interface IPurchaseReportProxy
 {
-    Task<HandlerRequestResult<IReadOnlyList<TenantOption>>> GetTenantsAsync(
+    Task<HandlerRequestResult<IReadOnlyList<TenantInfoDto>>> GetTenantsAsync(
         CancellationToken cancellationToken = default);
 
     Task<HandlerRequestResult<IReadOnlyList<string>>> GetFamiliesAsync(
@@ -16,7 +18,7 @@ public interface IPurchaseReportProxy
         string family,
         CancellationToken cancellationToken = default);
 
-    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetPurchaseReportAsync(
+    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>> GetPurchaseReportAsync(
         string tenantId,
         string family,
         string? subFamily,
@@ -29,7 +31,7 @@ public interface IPurchaseReportProxy
         decimal xyzYThreshold,
         CancellationToken cancellationToken = default);
 
-    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLine>>> GetAllPurchaseReportAsync(
+    Task<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>> GetAllPurchaseReportAsync(
         string tenantId,
         int windowDays,
         int reviewFrequencyDays,

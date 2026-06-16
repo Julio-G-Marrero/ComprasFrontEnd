@@ -1,5 +1,4 @@
 using Common.Views.Helpers;
-using Domain;
 
 namespace PurchaseReportManager.ViewModels.Models;
 
@@ -64,16 +63,16 @@ public sealed class PurchaseReportLineModel
     public string AlertBadgeClass => AlertLevel.ToUpperInvariant() switch
     {
         "CRITICO" => "badge bg-danger",
-        "ALTO"    => "badge bg-warning",
-        "MEDIO"   => "badge bg-info",
-        "BAJO"    => "text-muted small",
-        _         => "badge bg-secondary"
+        "ALTO" => "badge bg-warning",
+        "MEDIO" => "badge bg-info",
+        "BAJO" => "text-muted small",
+        _ => "badge bg-secondary"
     };
 
     public string AlertDisplayText => AlertLevel.ToUpperInvariant() switch
     {
         "BAJO" => "N/A",
-        _      => AlertLevel
+        _ => AlertLevel
     };
 
     public string InventoryLabel => InventoryDisplayHelper.Label(InventoryStatus);

@@ -20,7 +20,7 @@ public partial class PurchaseReportTable
         var extraClass = string.IsNullOrEmpty(thClass) ? "" : $" {thClass}";
         __builder.OpenElement(0, "th");
         __builder.AddAttribute(1, "class", $"sort-header{extraClass}");
-        __builder.AddAttribute(2, "onclick", EventCallback.Factory.Create(__builder, async () => await HandleSort(col)));
+        __builder.AddAttribute(2, "onclick", EventCallback.Factory.Create(this, async () => await HandleSort(col)));
         __builder.AddAttribute(3, "title", $"Ordenar por {label}");
         __builder.AddContent(4, label);
         __builder.AddMarkupContent(5, $" <span style=\"opacity:{iconOpacity};font-size:0.75em\">{icon}</span>");
