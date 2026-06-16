@@ -5,10 +5,10 @@ namespace PurchaseReportManager.ViewModels.Adapters;
 
 internal static class PurchaseReportLineAdapter
 {
-    internal static List<PurchaseReportLine> ToModels(IEnumerable<PurchaseReportLineDto> dtos) =>
+    internal static IReadOnlyList<PurchaseReportLineModel> ToModels(IEnumerable<PurchaseReportLineDto> dtos) =>
         dtos.Select(ToModel).ToList();
 
-    internal static PurchaseReportLine ToModel(PurchaseReportLineDto dto) => new()
+    internal static PurchaseReportLineModel ToModel(PurchaseReportLineDto dto) => new()
     {
         Sku = dto.Sku,
         Description = dto.Description,

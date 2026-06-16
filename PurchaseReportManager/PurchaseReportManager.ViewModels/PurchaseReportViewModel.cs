@@ -300,7 +300,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             }
 
             if (result.Success)
-                _items = (IReadOnlyList<PurchaseReportLineModel>)PurchaseReportLineAdapter.ToModels(result.Data ?? []).AsReadOnly();
+                _items = PurchaseReportLineAdapter.ToModels(result.Data);
             else
             {
                 _items = [];
