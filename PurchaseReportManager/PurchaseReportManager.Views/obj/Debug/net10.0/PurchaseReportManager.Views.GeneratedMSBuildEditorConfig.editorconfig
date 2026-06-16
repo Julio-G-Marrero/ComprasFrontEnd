@@ -8,48 +8,49 @@ build_property.ProjectTypeGuids =
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PurchaseReportManager.Views
 build_property.RootNamespace = PurchaseReportManager.Views
-build_property.ProjectDir = C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Views\
+build_property.ProjectDir = C:\Users\dan11\source\repos\ComprasFrontEnd\PurchaseReportManager\PurchaseReportManager.Views\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
-build_property.RazorLangVersion = 9.0
+build_property.RazorLangVersion = 10.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Usuario\OneDrive\Documentos\ComprasFrontend\PurchaseReportManager\PurchaseReportManager.Views
+build_property.MSBuildProjectDirectory = C:\Users\dan11\source\repos\ComprasFrontEnd\PurchaseReportManager\PurchaseReportManager.Views
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportDetailPanel.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportDetailPanel.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydERldGFpbFBhbmVsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportFilters.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportFilters.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydEZpbHRlcnMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportParamsPanel.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportParamsPanel.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydFBhcmFtc1BhbmVsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportSummaryCards.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportSummaryCards.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydFN1bW1hcnlDYXJkcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseSuggestionPrintView.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseSuggestionPrintView.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVN1Z2dlc3Rpb25QcmludFZpZXcucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Pages/PurchaseReportPage.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Pages/PurchaseReportPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VSZXBvcnRQYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/_Imports.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Usuario/OneDrive/Documentos/ComprasFrontend/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportTable.razor]
+[C:/Users/dan11/source/repos/ComprasFrontEnd/PurchaseReportManager/PurchaseReportManager.Views/Components/PurchaseReportTable.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQdXJjaGFzZVJlcG9ydFRhYmxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-vf66vhurt7
