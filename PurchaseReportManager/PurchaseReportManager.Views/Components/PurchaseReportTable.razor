@@ -35,7 +35,6 @@ else
                     @SortHeader("Descripción",  "description",  "")
                     @SortHeader("Familia",      "family",       "")
                     @SortHeader("SubFamilia",   "subfamily",    "")
-                    <th class="text-center">Req.Stock</th>
                     @SortHeader("Existencia",   "stock",        "text-end")
                     @SortHeader($"Ventas {Vm.WindowDays}d", "sales", "text-end")
                     @SortHeader("ABC",          "abc",          "text-center")
@@ -59,7 +58,6 @@ else
                         <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@LegacyTextNormalizer.Normalize(item.Description)">@LegacyTextNormalizer.Normalize(item.Description)</td>
                         <td>@LegacyTextNormalizer.Normalize(item.Family)</td>
                         <td>@LegacyTextNormalizer.Normalize(item.SubFamily)</td>
-                        <td class="text-center">@(item.RequiresStock ? "✓" : "")</td>
                         <td class="text-end">@item.EffectiveStock.ToString("N2")</td>
                         <td class="text-end">@item.SalesPeriodQuantity.ToString("N2")</td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
