@@ -31,6 +31,7 @@ public partial class MainLayout
         ["/transfers"]         = "Wearehouse.Page.Orders",
         ["/transferswithcost"] = "Wearehouse.Page.ViewCost",
         ["/scan"]              = "Inventory.Page.Scan",
+        ["/reporte-compras"]   = "PurchaseReportManager.Page.Report",
     };
 
     // ═══════════════════════════════════════════════════════════
@@ -155,6 +156,7 @@ public partial class MainLayout
             new("Traspasos con Costo", "/transferswithcost", "bi-arrow-left-right"),
             new("Traspasos",           "/transfers",         "bi-arrow-left-right"),
             new("Inventario",          "/scan",              "bi-box-seam-fill"),
+            new("Módulo de Compras",   "/reporte-compras",   "bi-clipboard2-data-fill"),
         ];
 
         return

@@ -30,6 +30,7 @@ builder.Services.AddAuthorizationCore(options =>
         "Wearehouse.Page.Orders",
         "Wearehouse.Page.ViewCost",
         "Inventory.Page.Scan",
+        "PurchaseReportManager.Page.Report",
     ];
 
     foreach (var policyName in policyNames)
