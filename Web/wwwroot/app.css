@@ -90,3 +90,634 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   NIUX SHELL — Design System v0.6
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tokens ─────────────────────────────────────────────────── */
+:root {
+    --n-primary:        #2563eb;
+    --n-primary-light:  #eff6ff;
+    --n-primary-hover:  #1d4ed8;
+    --n-surface:        #ffffff;
+    --n-bg:             #f8fafc;
+    --n-border:         #e2e8f0;
+    --n-text:           #0f172a;
+    --n-text-muted:     #64748b;
+    --n-text-subtle:    #94a3b8;
+    --n-shadow-sm:      0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --n-shadow-md:      0 4px 20px rgba(0,0,0,.10);
+    --n-shadow-xl:      0 8px 40px rgba(0,0,0,.18);
+    --n-radius-card:    12px;
+    --n-transition:     180ms ease;
+
+    --header-h:         56px;
+    --sidebar-w:        248px;
+    --sidebar-icon-w:   64px;
+    --touch-min:        44px;
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--n-bg);
+    color: var(--n-text);
+    font-family: system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+}
+ul  { margin: 0; padding: 0; list-style: none; }
+button { font-family: inherit; }
+
+/* ── Shell ───────────────────────────────────────────────────── */
+.niux-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.niux-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.niux-header {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: .875rem;
+    padding: 0 1.25rem;
+    background: var(--n-surface);
+    border-bottom: 1px solid var(--n-border);
+    position: sticky;
+    top: 0;
+    z-index: 400;
+    flex-shrink: 0;
+}
+
+.niux-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--n-text-muted);
+    font-size: 1.125rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.niux-hamburger:hover { background: var(--n-bg); color: var(--n-text); }
+
+.niux-brand {
+    font-size: .9375rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--n-text);
+    white-space: nowrap;
+}
+
+/* ── Sidebar — estructura base ───────────────────────────────── */
+.niux-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: var(--n-surface);
+    border-right: 1px solid var(--n-border);
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* desktop: empieza colapsado */
+    width: var(--sidebar-icon-w);
+    transition: width 240ms cubic-bezier(.4,0,.2,1);
+}
+
+.niux-shell.sidebar-open .niux-sidebar {
+    width: var(--sidebar-w);
+}
+
+/* ── Buscador ────────────────────────────────────────────────── */
+.sidebar-search {
+    flex-shrink: 0;
+    padding: .625rem .375rem .5rem;
+    border-bottom: 1px solid var(--n-border);
+}
+
+/* Colapsado: solo ícono de lupa */
+.sidebar-search-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 auto;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: var(--n-text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.sidebar-search-btn:hover { background: var(--n-bg); color: var(--n-text); }
+
+.niux-shell:not(.sidebar-open) .sidebar-search-btn       { display: flex; }
+.niux-shell:not(.sidebar-open) .sidebar-search-input-wrap { display: none; }
+
+/* Expandido: input completo */
+.sidebar-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    background: var(--n-bg);
+    border: 1px solid var(--n-border);
+    border-radius: 8px;
+    padding: .3125rem .5rem .3125rem .625rem;
+    transition: border-color var(--n-transition), box-shadow var(--n-transition);
+}
+.sidebar-search-input-wrap:focus-within {
+    border-color: var(--n-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+.sidebar-search-icon { color: var(--n-text-subtle); font-size: .8125rem; flex-shrink: 0; }
+
+.sidebar-search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font-size: .8125rem;
+    color: var(--n-text);
+    outline: none;
+    padding: 0;
+}
+.sidebar-search-input::placeholder { color: var(--n-text-subtle); }
+
+.sidebar-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: var(--n-text-subtle);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: .5rem;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background var(--n-transition);
+}
+.sidebar-search-clear:hover { background: var(--n-text-muted); }
+
+/* ── Estado vacío ────────────────────────────────────────────── */
+.sidebar-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .625rem;
+    padding: 2.5rem 1rem 2rem;
+    text-align: center;
+}
+.sidebar-empty-icon { font-size: 1.375rem; color: var(--n-text-subtle); }
+.sidebar-empty-text {
+    font-size: .8125rem;
+    color: var(--n-text-muted);
+    line-height: 1.5;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: max-width 240ms ease, opacity 160ms ease 120ms;
+}
+.niux-shell.sidebar-open .sidebar-empty-text { max-width: 180px; opacity: 1; }
+
+/* ── Nav ─────────────────────────────────────────────────────── */
+.sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: .5rem 0 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ── Grupo ───────────────────────────────────────────────────── */
+.sidebar-group { position: relative; }
+
+.sidebar-group + .sidebar-group {
+    margin-top: .125rem;
+    border-top: 1px solid var(--n-border);
+    padding-top: .125rem;
+}
+
+/* ── Botón de grupo ──────────────────────────────────────────── */
+.sidebar-group-header {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    /* ancho con margen lateral */
+    width: calc(100% - .75rem);
+    min-height: var(--touch-min);
+    margin: .125rem .375rem;
+    padding: .375rem .625rem;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--n-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.sidebar-group-header:hover { background: var(--n-bg); color: var(--n-text); }
+.sidebar-group.expanded .sidebar-group-header { color: var(--n-text); }
+
+/* Colapsado: centrar ícono */
+.niux-shell:not(.sidebar-open) .sidebar-group-header {
+    width: calc(100% - .75rem);
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* ── Ícono de grupo ──────────────────────────────────────────── */
+.sidebar-group-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: .9375rem;
+    flex-shrink: 0;
+    color: var(--n-text-muted);
+    background: transparent;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.sidebar-group-header:hover .sidebar-group-icon-wrap,
+.sidebar-group.expanded    .sidebar-group-icon-wrap {
+    background: var(--n-primary-light);
+    color: var(--n-primary);
+}
+
+/* ── Label de grupo ──────────────────────────────────────────── */
+.sidebar-group-label {
+    flex: 1;
+    font-size: .75rem;
+    font-weight: 600;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0;
+    opacity: 0;
+    transition: opacity 120ms ease 0ms, max-width 240ms ease;
+}
+.niux-shell.sidebar-open .sidebar-group-label {
+    max-width: 150px;
+    opacity: 1;
+    transition: opacity 160ms ease 120ms, max-width 240ms ease;
+}
+
+/* ── Chevron ─────────────────────────────────────────────────── */
+.sidebar-group-chevron {
+    font-size: .625rem;
+    flex-shrink: 0;
+    color: var(--n-text-subtle);
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: transform 220ms ease, opacity 120ms ease;
+}
+.niux-shell.sidebar-open .sidebar-group-chevron {
+    max-width: 14px;
+    opacity: 1;
+    transition: transform 220ms ease, opacity 160ms ease 120ms;
+}
+.sidebar-group.expanded .sidebar-group-chevron { transform: rotate(90deg); }
+
+/* ── Wrapper de links (animación) ────────────────────────────── */
+.sidebar-links-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 280ms cubic-bezier(.4,0,.2,1);
+}
+.sidebar-group.expanded .sidebar-links-wrapper {
+    max-height: 520px; /* 12 links × ~44px */
+}
+
+/* En modo ícono: siempre ocultar links */
+.niux-shell:not(.sidebar-open) .sidebar-links-wrapper { max-height: 0 !important; }
+
+/* ── Links individuales ──────────────────────────────────────── */
+.sidebar-links { padding: .125rem 0 .375rem; }
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    min-height: var(--touch-min);
+    padding: .375rem .625rem .375rem 2.625rem;
+    margin: .0625rem .375rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--n-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.sidebar-link:hover {
+    background: var(--n-bg);
+    color: var(--n-primary);
+    text-decoration: none;
+}
+
+.sidebar-link-icon {
+    font-size: .875rem;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+    color: var(--n-text-subtle);
+    transition: color var(--n-transition);
+}
+.sidebar-link:hover .sidebar-link-icon { color: var(--n-primary); }
+
+.sidebar-link-label {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 0;
+    opacity: 0;
+    transition: opacity 120ms ease 0ms, max-width 240ms ease;
+}
+.niux-shell.sidebar-open .sidebar-link-label {
+    max-width: 160px;
+    opacity: 1;
+    transition: opacity 160ms ease 120ms, max-width 240ms ease;
+}
+
+/* ── Overlay (móvil / tablet) ────────────────────────────────── */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--header-h);
+    background: rgba(0,0,0,.4);
+    z-index: 199;
+    cursor: pointer;
+    /* suave aparición */
+    animation: overlay-in 200ms ease forwards;
+}
+
+@keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Área principal ──────────────────────────────────────────── */
+.niux-main {
+    flex: 1;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.niux-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.75rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.content-title {
+    font-size: 1.625rem;
+    font-weight: 700;
+    letter-spacing: -.025em;
+    color: var(--n-text);
+    margin: 0 0 .375rem;
+}
+.content-subtitle {
+    font-size: .9375rem;
+    color: var(--n-text-muted);
+    margin: 0;
+}
+
+/* ── Secciones ───────────────────────────────────────────────── */
+.app-section-header {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    padding-bottom: .875rem;
+    border-bottom: 1px solid var(--n-border);
+    margin-bottom: 1.25rem;
+}
+
+.app-section-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--n-primary-light);
+    color: var(--n-primary);
+    font-size: .875rem;
+    flex-shrink: 0;
+}
+
+.app-section-label {
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--n-text-muted);
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 1rem;
+}
+
+.app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .875rem;
+    padding: 1.625rem 1rem 1.375rem;
+    background: var(--n-surface);
+    border: 1px solid var(--n-border);
+    border-radius: var(--n-radius-card);
+    text-decoration: none;
+    color: var(--n-text);
+    box-shadow: var(--n-shadow-sm);
+    transition: transform var(--n-transition), box-shadow var(--n-transition),
+                border-color var(--n-transition);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.app-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--n-shadow-md);
+    border-color: var(--n-primary);
+    color: var(--n-primary);
+    text-decoration: none;
+}
+.app-card:active { transform: translateY(-1px); box-shadow: var(--n-shadow-sm); }
+
+.app-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--n-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.375rem;
+    color: var(--n-primary);
+    flex-shrink: 0;
+    transition: background var(--n-transition), color var(--n-transition);
+}
+.app-card:hover .app-card-icon { background: var(--n-primary); color: #fff; }
+
+.app-card-label {
+    font-size: .8125rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.35;
+    color: inherit;
+}
+
+/* ════════════════════════════════════════════════════════════
+   DESKTOP  ≥ 1024px  — sidebar sticky en el flujo
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+    .niux-sidebar {
+        position: sticky;
+        top: var(--header-h);
+        height: calc(100vh - var(--header-h));
+        align-self: flex-start;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   TABLET  768px – 1023px  — sidebar sticky pero más estrecho
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    .niux-sidebar {
+        position: sticky;
+        top: var(--header-h);
+        height: calc(100vh - var(--header-h));
+        align-self: flex-start;
+        /* En tablet el sidebar colapsado muestra íconos; expandido ocupa 220px */
+        --sidebar-w: 220px;
+    }
+
+    .niux-content { padding: 2rem 1.25rem 3rem; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MÓVIL  < 768px  — offcanvas overlay
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 767.98px) {
+
+    /* Sidebar como panel offcanvas */
+    .niux-sidebar {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        height: calc(100vh - var(--header-h));
+        z-index: 200;
+        /* Siempre el ancho completo en móvil */
+        width: var(--sidebar-w) !important;
+        /* Oculto por defecto */
+        transform: translateX(-100%);
+        transition: transform 260ms cubic-bezier(.4,0,.2,1);
+        /* Sombra profunda cuando abierto */
+        box-shadow: none;
+    }
+
+    .niux-shell.sidebar-open .niux-sidebar {
+        transform: translateX(0);
+        box-shadow: var(--n-shadow-xl);
+    }
+
+    /* Mostrar overlay al abrir */
+    .niux-shell.sidebar-open .sidebar-overlay { display: block; }
+
+    /* Sidebar abierto en móvil: siempre mostrar texto */
+    .sidebar-group-label,
+    .sidebar-link-label {
+        max-width: 160px !important;
+        opacity: 1 !important;
+        transition: none !important;
+    }
+    .sidebar-group-chevron {
+        max-width: 14px !important;
+        opacity: 1 !important;
+        transition: transform 220ms ease !important;
+    }
+    .sidebar-group-header {
+        width: calc(100% - .75rem) !important;
+        justify-content: flex-start !important;
+        padding-left: .625rem !important;
+        padding-right: .625rem !important;
+    }
+
+    /* Búsqueda en móvil: siempre mostrar input */
+    .sidebar-search-btn          { display: none !important; }
+    .sidebar-search-input-wrap   { display: flex !important; }
+
+    /* Estado vacío en móvil */
+    .sidebar-empty-text { max-width: 180px !important; opacity: 1 !important; }
+
+    /* Links: max-height anulado en móvil (no hay estado icon-only) */
+    .niux-shell:not(.sidebar-open) .sidebar-links-wrapper { max-height: 0 !important; }
+
+    /* Área principal sin comprimir */
+    .niux-main { width: 100%; }
+
+    .niux-content {
+        padding: 1.5rem 1rem 3rem;
+        gap: 1.75rem;
+    }
+
+    .content-title { font-size: 1.375rem; }
+
+    .app-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Cards más pequeñas en móvil */
+    .app-card { padding: 1.25rem .75rem 1rem; gap: .75rem; }
+    .app-card-icon { width: 44px; height: 44px; font-size: 1.2rem; border-radius: 11px; }
+    .app-card-label { font-size: .75rem; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MUY PEQUEÑO  < 375px
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 374.98px) {
+    .niux-content { padding: 1.25rem .75rem 2.5rem; }
+    .app-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+    :root { --sidebar-w: 88vw; }
+}

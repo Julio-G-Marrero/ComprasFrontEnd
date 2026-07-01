@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using PurchaseReportManager.Proxy;
 using PurchaseReportManager.ViewModels;
 using Web.Components;
@@ -10,6 +11,34 @@ builder.Services.AddPurchaseReportManagerViewModels();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// TEMPORARY: no real login exists yet. These policies all allow any (stub)
+// authenticated user, just so the Niux Shell sidebar's AuthorizeView checks
+// don't throw. Replace with real policy rules once auth is implemented.
+builder.Services.AddAuthorizationCore(options =>
+{
+    string[] policyNames =
+    [
+        "BudgetAuthorization.Page.Orders",
+        "Valuation.Page.Orders",
+        "Valuation.Page.AssignOrder",
+        "Budget.Page.Orders",
+        "MultiAccess.Page.Users",
+        "MultiAccess.Page.Application",
+        "MultiAccess.Page.Tenant",
+        "MultiAccess.Page.Role",
+        "Wearehouse.Page.Orders",
+        "Wearehouse.Page.ViewCost",
+        "Inventory.Page.Scan",
+    ];
+
+    foreach (var policyName in policyNames)
+    {
+        options.AddPolicy(policyName, policy => policy.RequireAssertion(_ => true));
+    }
+});
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, StubAuthenticationStateProvider>();
 
 var app = builder.Build();
 

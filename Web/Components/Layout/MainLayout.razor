@@ -1,33 +1,402 @@
 @inherits LayoutComponentBase
-@inject NavigationManager Nav
-@implements IDisposable
 
-<div class="app-shell">
-    <header class="app-header d-flex align-items-center px-3">
-        <button class="hamburger-btn me-3" @onclick="OpenMenu" title="Menú">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-            </svg>
-        </button>
-        <span class="app-brand">Módulo de Compras</span>
-    </header>
+@* ═══ DESIGN TOKENS — paleta corporativa azul/neutro ══════════ *@
+<style>
+    :root {
+        /* Paleta base */
+        --n-primary:        #2563EB;
+        --n-primary-hover:  #1D4ED8;
+        --n-primary-light:  #EBF3FF;
 
-    @if (_menuOpen)
-    {
-        <div class="nav-overlay" @onclick="CloseMenu"></div>
+        /* Superficies */
+        --n-surface:        #FFFFFF;
+        --n-bg:             #F4F7FB;   /* página: fondo ligeramente azulado */
+        --n-sidebar-bg:     #F0F4F9;   /* sidebar: panel distinguido del contenido */
+        --n-hover-bg:       #E6EFFD;   /* hover: azul muy suave */
+        --n-active-bg:      #D8E9FF;   /* activo/seleccionado */
+
+        /* Bordes */
+        --n-border:         #DDE6F0;   /* borde principal — muy sutil */
+        --n-border-light:   #ECF2F8;   /* separadores internos */
+
+        /* Tipografía */
+        --n-text:           #1E2D3D;   /* texto principal — azul oscuro suave */
+        --n-text-muted:     #5A6D84;   /* texto secundario */
+        --n-text-subtle:    #8FA3B8;   /* texto terciario / placeholders */
+        --n-text-active:    #1A4EC8;   /* texto en estado activo */
+
+        /* Sombras */
+        --n-shadow-sm:      0 1px 2px rgba(30,55,100,.05), 0 1px 3px rgba(30,55,100,.04);
+        --n-shadow-md:      0 4px 16px rgba(30,55,100,.10);
+        --n-shadow-xl:      0 8px 36px rgba(30,55,100,.16);
+
+        /* Foco */
+        --n-focus-ring:     rgba(37, 99, 235, 0.18);
     }
 
-    <div class="nav-drawer @(_menuOpen ? "nav-drawer--open" : "")">
-        <div class="nav-drawer-header d-flex justify-content-between align-items-center px-3 py-3">
-            <span class="text-white fw-semibold">Navegación</span>
-            <button class="btn-close btn-close-white btn-sm" @onclick="CloseMenu" aria-label="Cerrar"></button>
-        </div>
-        <NavMenu />
-    </div>
+    /* ── Header ─────────────────────────────────────────────── */
+    .niux-header {
+        background: var(--n-surface);
+        border-bottom: 1px solid var(--n-border);
+        box-shadow: 0 1px 0 var(--n-border-light);
+    }
 
-    <main class="app-content">
-        @Body
-    </main>
+    .niux-brand {
+        color: var(--n-text);
+        letter-spacing: -.02em;
+    }
+
+    /* Resaltar la letra inicial con el azul */
+    .niux-brand::first-letter {
+        color: var(--n-primary);
+    }
+
+    .niux-hamburger {
+        color: var(--n-text-muted);
+        border-radius: 6px;
+    }
+    .niux-hamburger:hover {
+        background: var(--n-hover-bg);
+        color: var(--n-text);
+    }
+    .niux-hamburger:focus-visible {
+        outline: 2px solid var(--n-primary);
+        outline-offset: 2px;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────────── */
+    .niux-sidebar {
+        background: var(--n-sidebar-bg);
+        border-right: 1px solid var(--n-border);
+    }
+
+    /* ── Buscador ────────────────────────────────────────────── */
+    .sidebar-search {
+        border-bottom-color: var(--n-border-light);
+    }
+
+    .sidebar-search-input-wrap {
+        background: rgba(255, 255, 255, 0.72);
+        border-color: var(--n-border);
+        backdrop-filter: blur(4px);
+    }
+    .sidebar-search-input-wrap:focus-within {
+        background: var(--n-surface);
+        border-color: var(--n-primary);
+        box-shadow: 0 0 0 3px var(--n-focus-ring);
+    }
+
+    .sidebar-search-btn:hover {
+        background: var(--n-hover-bg);
+        color: var(--n-text);
+    }
+
+    /* ── Grupos ──────────────────────────────────────────────── */
+    .sidebar-group + .sidebar-group {
+        border-top-color: var(--n-border-light);
+    }
+
+    .sidebar-group-header {
+        color: var(--n-text-muted);
+        border-radius: 6px;
+    }
+    .sidebar-group-header:hover {
+        background: var(--n-hover-bg);
+        color: var(--n-text);
+    }
+    .sidebar-group-header:focus-visible {
+        outline: 2px solid var(--n-primary);
+        outline-offset: -2px;
+    }
+
+    /* Grupo expandido: header ligeramente diferenciado */
+    .sidebar-group.expanded > .sidebar-group-header {
+        color: var(--n-text);
+    }
+
+    /* Ícono del grupo */
+    .sidebar-group-icon-wrap {
+        color: var(--n-text-muted);
+        border-radius: 7px;
+        transition: background 160ms ease, color 160ms ease;
+    }
+    .sidebar-group-header:hover   .sidebar-group-icon-wrap,
+    .sidebar-group.expanded       .sidebar-group-icon-wrap {
+        background: var(--n-active-bg);
+        color: var(--n-primary);
+    }
+
+    /* Label del grupo */
+    .sidebar-group-label {
+        font-size: .6875rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        color: inherit;
+    }
+
+    /* Chevron */
+    .sidebar-group-chevron {
+        color: var(--n-text-subtle);
+    }
+
+    /* ── Links individuales ──────────────────────────────────── */
+    .sidebar-link {
+        color: var(--n-text-muted);
+        border-radius: 6px;
+        position: relative;
+    }
+    .sidebar-link:hover {
+        background: var(--n-hover-bg);
+        color: var(--n-text);
+        text-decoration: none;
+    }
+    .sidebar-link:focus-visible {
+        outline: 2px solid var(--n-primary);
+        outline-offset: -2px;
+    }
+
+    /* Estado activo (router match de Blazor añade .active) */
+    .sidebar-link.active,
+    .sidebar-link[aria-current="page"] {
+        background: var(--n-active-bg);
+        color: var(--n-text-active);
+        font-weight: 600;
+    }
+    .sidebar-link.active::before,
+    .sidebar-link[aria-current="page"]::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: var(--n-primary);
+    }
+
+    /* Ícono del link */
+    .sidebar-link-icon {
+        color: var(--n-text-subtle);
+        transition: color 160ms ease;
+    }
+    .sidebar-link:hover .sidebar-link-icon { color: var(--n-primary); }
+    .sidebar-link.active         .sidebar-link-icon,
+    .sidebar-link[aria-current="page"] .sidebar-link-icon { color: var(--n-primary); }
+
+    /* ── Área principal ──────────────────────────────────────── */
+    body { background: var(--n-bg); }
+
+    .niux-main  { background: var(--n-bg); }
+    .niux-content { gap: 2rem; }
+
+    /* Hero */
+    .content-hero {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--n-border);
+    }
+    .content-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--n-text);
+        letter-spacing: -.03em;
+        margin-bottom: .25rem;
+    }
+    .content-subtitle {
+        color: var(--n-text-muted);
+        font-size: .9rem;
+    }
+
+    /* Cabecera de sección */
+    .app-section-header {
+        border-bottom-color: var(--n-border-light);
+        padding-bottom: .75rem;
+        margin-bottom: 1rem;
+    }
+    .app-section-icon-wrap {
+        background: var(--n-hover-bg);
+        color: var(--n-primary);
+        border-radius: 7px;
+        width: 26px;
+        height: 26px;
+    }
+    .app-section-label {
+        font-size: .625rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--n-text-muted);
+    }
+
+    /* Cards */
+    .app-card {
+        background: var(--n-surface);
+        border: 1px solid var(--n-border);
+        box-shadow: var(--n-shadow-sm);
+        color: var(--n-text);
+        border-radius: 10px;
+        gap: .75rem;
+        padding: 1.5rem 1rem 1.25rem;
+        transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+    .app-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--n-shadow-md);
+        border-color: rgba(37, 99, 235, .35);
+        color: var(--n-primary);
+        text-decoration: none;
+    }
+    .app-card:active {
+        transform: translateY(0);
+        box-shadow: var(--n-shadow-sm);
+    }
+
+    .app-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--n-primary-light);
+        color: var(--n-primary);
+        font-size: 1.25rem;
+        transition: background 160ms ease, color 160ms ease;
+    }
+    .app-card:hover .app-card-icon {
+        background: var(--n-primary);
+        color: #fff;
+    }
+
+    .app-card-label {
+        font-size: .8rem;
+        font-weight: 500;
+        color: inherit;
+    }
+
+    /* Estado vacío */
+    .sidebar-empty-icon { color: var(--n-text-subtle); }
+    .sidebar-empty-text { color: var(--n-text-muted); font-size: .8rem; }
+</style>
+
+@* ═══ SHELL ════════════════════════════════════════════════════ *@
+<div class="niux-shell @(sidebarOpen ? "sidebar-open" : "")">
+
+    @* ── Header ─────────────────────────────────────────────── *@
+    <header class="niux-header">
+        <button class="niux-hamburger"
+                @onclick="ToggleSidebar"
+                aria-label="@(sidebarOpen ? "Cerrar menú" : "Abrir menú")">
+            <i class="bi @(sidebarOpen ? "bi-x-lg" : "bi-list")" aria-hidden="true"></i>
+        </button>
+        <span class="niux-brand">Niux</span>
+    </header>
+
+    <div class="niux-body">
+
+        @* ── Sidebar ─────────────────────────────────────────── *@
+        <aside class="niux-sidebar" aria-label="Navegación principal">
+
+            @* Buscador *@
+            <div class="sidebar-search">
+                <button class="sidebar-search-btn"
+                        @onclick="ToggleSidebar"
+                        aria-label="Abrir menú para buscar">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                </button>
+                <div class="sidebar-search-input-wrap">
+                    <i class="bi bi-search sidebar-search-icon" aria-hidden="true"></i>
+                    <input type="search"
+                           class="sidebar-search-input"
+                           placeholder="Buscar módulo..."
+                           aria-label="Buscar módulo"
+                           @bind="SearchText"
+                           @bind:event="oninput" />
+                    @if (HasSearch())
+                    {
+                        <button class="sidebar-search-clear"
+                                @onclick="ClearSearch"
+                                aria-label="Limpiar búsqueda">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        </button>
+                    }
+                </div>
+            </div>
+
+            @* Grupos y links *@
+            <nav class="sidebar-nav" aria-label="Módulos">
+
+                @foreach (var group in FilteredGroups)
+                {
+                    var expanded = IsGroupExpanded(group.GroupLabel);
+
+                    <div class="sidebar-group @(expanded ? "expanded" : "")">
+
+                        <button class="sidebar-group-header"
+                                @onclick="() => HandleGroupClick(group.GroupLabel)"
+                                aria-expanded="@(expanded ? "true" : "false")"
+                                aria-label="@group.GroupLabel">
+                            <span class="sidebar-group-icon-wrap" aria-hidden="true">
+                                <i class="bi @group.GroupIcon"></i>
+                            </span>
+                            <span class="sidebar-group-label">@group.GroupLabel</span>
+                            <i class="bi bi-chevron-right sidebar-group-chevron" aria-hidden="true"></i>
+                        </button>
+
+                        <div class="sidebar-links-wrapper">
+                            <ul class="sidebar-links" role="list">
+                                @foreach (var app in group.Apps)
+                                {
+                                    if (app.Policy is null)
+                                    {
+                                        <li>
+                                            <a href="@app.Url" class="sidebar-link" @onclick="CloseSidebar">
+                                                <i class="bi @app.Icon sidebar-link-icon" aria-hidden="true"></i>
+                                                <span class="sidebar-link-label">@app.Label</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <AuthorizeView Policy="@app.Policy">
+                                            <Authorized>
+                                                <li>
+                                                    <a href="@app.Url" class="sidebar-link" @onclick="CloseSidebar">
+                                                        <i class="bi @app.Icon sidebar-link-icon" aria-hidden="true"></i>
+                                                        <span class="sidebar-link-label">@app.Label</span>
+                                                    </a>
+                                                </li>
+                                            </Authorized>
+                                        </AuthorizeView>
+                                    }
+                                }
+                            </ul>
+                        </div>
+
+                    </div>
+                }
+
+                @* Estado vacío de búsqueda *@
+                @if (HasSearch() && !FilteredGroups.Any())
+                {
+                    <div class="sidebar-empty" role="status" aria-live="polite">
+                        <i class="bi bi-search sidebar-empty-icon" aria-hidden="true"></i>
+                        <span class="sidebar-empty-text">
+                            Sin resultados para <strong>@SearchText</strong>
+                        </span>
+                    </div>
+                }
+
+            </nav>
+
+        </aside>
+
+        @* ── Overlay móvil ────────────────────────────────────── *@
+        <div class="sidebar-overlay" @onclick="CloseSidebar" aria-hidden="true"></div>
+
+        @* ── Contenido principal ──────────────────────────────── *@
+        <main class="niux-main">
+            @Body
+        </main>
+
+    </div>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -35,23 +404,3 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code {
-    private bool _menuOpen;
-
-    protected override void OnInitialized()
-    {
-        Nav.LocationChanged += OnLocationChanged;
-    }
-
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        _menuOpen = false;
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void OpenMenu() => _menuOpen = true;
-    private void CloseMenu() => _menuOpen = false;
-
-    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
-}
