@@ -16,7 +16,7 @@ public static class DependencyContainer
         {
             client.BaseAddress = new Uri(Options.BaseUrl
                 ?? throw new InvalidOperationException("ApiSettings:BaseUrl no está configurado."));
-            client.Timeout = TimeSpan.FromMinutes(4);
+            client.Timeout = TimeSpan.FromMinutes(6);
         });
 
         return services;

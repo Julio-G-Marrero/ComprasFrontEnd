@@ -40,5 +40,5 @@ public interface IPurchaseReportProxy
         decimal minOperationalStock,
         decimal xyzXThreshold,
         decimal xyzYThreshold,
-        CancellationToken cancellationToken = default);
+        List<string> families);
 }

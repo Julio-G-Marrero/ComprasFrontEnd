@@ -207,7 +207,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         {
             var result = await proxy.GetTenantsAsync(cancellationToken);
             if (result.Success)
-                Tenants = result.Data ?? [];
+                Tenants = result.SuccessValue ?? [];
             else
                 NotifyCatalogFailure($"Error al cargar tenants: {result.ErrorMessage}");
         }
@@ -261,7 +261,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             {
                 var result = await proxy.GetSubfamiliesAsync(SelectedTenantId, SelectedFamily, cancellationToken);
                 if (result.Success)
-                    Subfamilies = result.Data ?? [];
+                    Subfamilies = result.SuccessValue ?? [];
                 else
                     NotifyCatalogFailure($"Error al cargar subfamilias: {result.ErrorMessage}");
             }
@@ -292,7 +292,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                 result = await proxy.GetAllPurchaseReportAsync(
                     SelectedTenantId, WindowDays, ReviewFrequencyDays, ServiceLevelPercent,
                     DefaultSupplierDays, MinOperationalStock,
-                    XyzXThreshold, XyzYThreshold, cancellationToken);
+                    XyzXThreshold, XyzYThreshold, [.. Families]);
             }
             else
             {
@@ -305,7 +305,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
             }
 
             if (result.Success)
-                _items = PurchaseReportLineAdapter.ToModels(result.Data);
+                _items = PurchaseReportLineAdapter.ToModels(result.SuccessValue);
             else
             {
                 _items = [];
@@ -338,7 +338,7 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     {
         var result = await proxy.GetFamiliesAsync(SelectedTenantId, cancellationToken);
         if (result.Success)
-            Families = (result.Data ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
+            Families = (result.SuccessValue ?? []).Where(f => !string.IsNullOrEmpty(f)).ToList().AsReadOnly();
         else
         {
             Families = [];
