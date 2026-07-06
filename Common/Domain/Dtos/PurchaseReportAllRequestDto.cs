@@ -1,10 +1,8 @@
 ﻿namespace Domain.Dtos;
 
-public class PurchaseReportRequestDto(string family, string subfamily, int windowsDays, int reviewFrequencyDays, decimal zService, int defaultSupplierDays,
-    decimal minOperationalStock, decimal xyzXThreshold, decimal xyzYThreshold)
+public class PurchaseReportAllRequestDto(int windowsDays, int reviewFrequencyDays, decimal zService, int defaultSupplierDays,
+    decimal minOperationalStock, decimal xyzXThreshold, decimal xyzYThreshold, List<string> families)
 {
-    public string Family => family;
-    public string Subfamily => subfamily;
     public int WindowsDays => windowsDays;
     public int ReviewFrequencyDays => reviewFrequencyDays;
     public decimal ZService => zService;
@@ -12,4 +10,5 @@ public class PurchaseReportRequestDto(string family, string subfamily, int windo
     public decimal MinOperationalStock => minOperationalStock;
     public decimal XyzXThreshold => xyzXThreshold;
     public decimal XyzYThreshold => xyzYThreshold;
+    public List<string> Families => families;
 }

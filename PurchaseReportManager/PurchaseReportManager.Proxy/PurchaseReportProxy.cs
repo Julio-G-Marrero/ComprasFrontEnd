@@ -100,19 +100,16 @@ internal sealed class PurchaseReportProxy(
         HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>> result;
         try
         {
-            var url = BuildReportUrl(family, subFamily, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold);
-            using var request = TenantRequest(HttpMethod.Get, url, tenantId);
-            using var response = await httpClient.SendAsync(request, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            var apiResponse = await response.Content
-                .ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>>(JsonOptions, cancellationToken);
-
-            result = apiResponse;
+            if (httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id"))
+                httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
+            httpClient.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId);
+            var response = await httpClient.PostAsJsonAsync("/api/reports/purchase", new PurchaseReportRequestDto(family, subFamily, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold));
+            result = await response.Content.ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>>()
+                ?? new HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>("No se pudo obtener el reporte");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error fetching purchase report for tenant {TenantId} family {Family}", tenantId, family);
+            logger.LogError(ex, "Error fetching all purchase report for tenant {TenantId}", tenantId);
             result = new HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>(ex.Message);
         }
         return result;
@@ -135,7 +132,7 @@ internal sealed class PurchaseReportProxy(
             if (httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id"))
                 httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
             httpClient.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId);
-            var response = await httpClient.PostAsJsonAsync("/api/reports/purchase/all", new PurchaseReportRequestDto(windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold, families));
+            var response = await httpClient.PostAsJsonAsync("/api/reports/purchase/all", new PurchaseReportAllRequestDto(windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzXThreshold, xyzYThreshold, families));
             result = await response.Content.ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>>() 
                 ?? new HandlerRequestResult<IReadOnlyList<PurchaseReportLineDto>>("No se pudo obtener el reporte");
         }
