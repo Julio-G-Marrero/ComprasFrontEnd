@@ -11,6 +11,13 @@
         width: 21cm;
     }
     @@media print {
+        html, body,
+        .niux-shell, .niux-body, .niux-main {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
+            position: static !important;
+        }
         body * { visibility: hidden; }
         #purchase-print-area, #purchase-print-area * { visibility: visible; }
         #purchase-print-area {
@@ -19,6 +26,10 @@
             top: 0;
             width: 100%;
         }
+        table { page-break-inside: auto; }
+        tr { page-break-inside: avoid; page-break-after: auto; }
+        thead { display: table-header-group; }
+        tfoot { display: table-footer-group; }
     }
 </style>
 
