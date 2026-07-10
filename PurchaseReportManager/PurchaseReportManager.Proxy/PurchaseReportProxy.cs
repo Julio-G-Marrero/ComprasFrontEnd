@@ -46,10 +46,7 @@ internal sealed class PurchaseReportProxy(
             using var request = TenantRequest(HttpMethod.Get, "/api/catalog/families", tenantId);
             using var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var data = await response.Content
-                .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            result = new HandlerRequestResult<IReadOnlyList<string>>(
-                data is null ? [] : data.AsReadOnly());
+            result = await response.Content.ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<string>>>();
         }
         catch (Exception ex)
         {
@@ -67,14 +64,11 @@ internal sealed class PurchaseReportProxy(
         HandlerRequestResult<IReadOnlyList<string>> result;
         try
         {
-            var url = $"/api/catalog/subfamilies?familia={Uri.EscapeDataString(family)}";
+            var url = $"/api/catalog/subfamilies?family={Uri.EscapeDataString(family)}";
             using var request = TenantRequest(HttpMethod.Get, url, tenantId);
             using var response = await httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var data = await response.Content
-                .ReadFromJsonAsync<List<string>>(JsonOptions, cancellationToken);
-            result =  new HandlerRequestResult<IReadOnlyList<string>>(
-                data is null ? [] : data.AsReadOnly());
+            result = await response.Content.ReadFromJsonAsync<HandlerRequestResult<IReadOnlyList<string>>>();
         }
         catch (Exception ex)
         {
@@ -152,39 +146,4 @@ internal sealed class PurchaseReportProxy(
         return request;
     }
 
-    private static string BuildReportUrl(string family, string? subFamily,
-        int windowDays, int reviewFrequencyDays, decimal serviceLevel,
-        int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
-    {
-        var sb = new StringBuilder("/api/reports/purchase?family=")
-            .Append(Uri.EscapeDataString(family));
-        if (!string.IsNullOrWhiteSpace(subFamily))
-            sb.Append("&subFamily=").Append(Uri.EscapeDataString(subFamily));
-        AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY);
-        return sb.ToString();
-    }
-
-    private static string BuildParamsUrl(string baseUrl,
-        int windowDays, int reviewFrequencyDays, decimal serviceLevel,
-        int defaultSupplierDays, decimal minOperationalStock, decimal xyzX, decimal xyzY)
-    {
-        var sb = new StringBuilder(baseUrl).Append('?');
-        AppendParams(sb, windowDays, reviewFrequencyDays, serviceLevel, defaultSupplierDays, minOperationalStock, xyzX, xyzY, firstParam: true);
-        return sb.ToString();
-    }
-
-    private static void AppendParams(StringBuilder sb, int windowDays, int reviewFrequencyDays,
-        decimal serviceLevel, int defaultSupplierDays, decimal minOperationalStock,
-        decimal xyzX, decimal xyzY, bool firstParam = false)
-    {
-        var ic = System.Globalization.CultureInfo.InvariantCulture;
-        var sep = firstParam ? string.Empty : "&";
-        sb.Append(sep).Append("windowDays=").Append(windowDays)
-          .Append("&reviewFrequencyDays=").Append(reviewFrequencyDays)
-          .Append("&serviceLevel=").Append(serviceLevel.ToString("G", ic))
-          .Append("&defaultSupplierDays=").Append(defaultSupplierDays)
-          .Append("&minOperationalStock=").Append(minOperationalStock.ToString("G", ic))
-          .Append("&xyzXThreshold=").Append(xyzX.ToString("G", ic))
-          .Append("&xyzYThreshold=").Append(xyzY.ToString("G", ic));
-    }
 }
