@@ -12,6 +12,28 @@ public partial class PurchaseReportTable
     [Parameter] public EventCallback<PurchaseReportLineModel> OnRowClick { get; set; }
     [Parameter] public EventCallback OnPageChanged { get; set; }
 
+    private static readonly (string Value, string Label)[] AlertLevelOptions =
+    [
+        ("CRITICO", "Crítico"),
+        ("ALTO", "Alto"),
+        ("MEDIO", "Medio"),
+        ("BAJO", "Bajo"),
+    ];
+
+    private static readonly (string Value, string Label)[] InventoryStatusOptions =
+    [
+        ("SALUDABLE", InventoryDisplayHelper.Label("SALUDABLE")),
+        ("BAJO_OBJETIVO", InventoryDisplayHelper.Label("BAJO_OBJETIVO")),
+        ("SOBRESTOCK", InventoryDisplayHelper.Label("SOBRESTOCK")),
+        ("SIN_VENTA_CON_STOCK", InventoryDisplayHelper.Label("SIN_VENTA_CON_STOCK")),
+    ];
+
+    private async Task HandleFilterChanged()
+    {
+        Vm.ResetPagination();
+        await OnPageChanged.InvokeAsync();
+    }
+
     private RenderFragment SortHeader(string label, string col, string thClass) => __builder =>
     {
         var isActive = Vm.SortColumn == col;
@@ -23,7 +45,7 @@ public partial class PurchaseReportTable
         __builder.AddAttribute(2, "onclick", EventCallback.Factory.Create(this, async () => await HandleSort(col)));
         __builder.AddAttribute(3, "title", $"Ordenar por {label}");
         __builder.AddContent(4, label);
-        __builder.AddMarkupContent(5, $" <span style=\"opacity:{iconOpacity};font-size:0.75em\">{icon}</span>");
+        __builder.AddMarkupContent(5, $" <span style=\"opacity:{iconOpacity};font-size:0.75em\">{icon}</span><span class=\"col-resize-handle\"></span>");
         __builder.CloseElement();
     };
 

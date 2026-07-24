@@ -47,6 +47,8 @@ public interface IPurchaseReportViewModel
     bool OnlyWithSuggestedPurchase { get; set; }
     bool OnlyCritical { get; set; }
     bool OnlyRequiresReview { get; set; }
+    string SelectedAlertLevel { get; set; }
+    string SelectedInventoryStatus { get; set; }
     string SearchText { get; set; }
 
     // Sorting

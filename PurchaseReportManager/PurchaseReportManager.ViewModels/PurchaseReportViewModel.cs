@@ -99,6 +99,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
     public bool OnlyWithSuggestedPurchase { get; set; }
     public bool OnlyCritical { get; set; }
     public bool OnlyRequiresReview { get; set; }
+    public string SelectedAlertLevel { get; set; } = string.Empty;
+    public string SelectedInventoryStatus { get; set; } = string.Empty;
     public string SearchText { get; set; } = string.Empty;
 
     // Sorting
@@ -129,6 +131,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
                 .Where(x => !OnlyWithSuggestedPurchase || x.HasSuggestion)
                 .Where(x => !OnlyCritical || x.IsCritical)
                 .Where(x => !OnlyRequiresReview || x.RequiresReview)
+                .Where(x => string.IsNullOrEmpty(SelectedAlertLevel) || x.AlertLevel.Equals(SelectedAlertLevel, StringComparison.OrdinalIgnoreCase))
+                .Where(x => string.IsNullOrEmpty(SelectedInventoryStatus) || x.InventoryStatus.Equals(SelectedInventoryStatus, StringComparison.OrdinalIgnoreCase))
                 .Where(x => string.IsNullOrWhiteSpace(SearchText) || MatchesSearch(x));
             return SortItems(filtered).ToList().AsReadOnly();
         }
@@ -359,6 +363,8 @@ internal sealed class PurchaseReportViewModel(IPurchaseReportProxy proxy) : IPur
         OnlyWithSuggestedPurchase = false;
         OnlyCritical = false;
         OnlyRequiresReview = false;
+        SelectedAlertLevel = string.Empty;
+        SelectedInventoryStatus = string.Empty;
         SearchText = string.Empty;
         ResetPagination();
     }

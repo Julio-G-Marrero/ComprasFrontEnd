@@ -1,19 +1,44 @@
-<div class="mb-2" style="max-width:500px">
-    <div class="input-group">
-        <span class="input-group-text">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-            </svg>
-        </span>
-        <input type="text" class="form-control form-control-sm"
-               placeholder="Buscar por SKU, descripción, familia, ABC, XYZ, motivo…"
-               value="@Vm.SearchText"
-               @oninput="HandleSearch" />
-        @if (!string.IsNullOrEmpty(Vm.SearchText))
-        {
-            <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleClearSearch"
-                    title="Limpiar búsqueda">&#x2715;</button>
-        }
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-2">
+    <div style="max-width:500px" class="flex-grow-1">
+        <div class="input-group">
+            <span class="input-group-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </span>
+            <input type="text" class="form-control form-control-sm"
+                   placeholder="Buscar por SKU, descripción, familia, ABC, XYZ, motivo…"
+                   value="@Vm.SearchText"
+                   @oninput="HandleSearch" />
+            @if (!string.IsNullOrEmpty(Vm.SearchText))
+            {
+                <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="HandleClearSearch"
+                        title="Limpiar búsqueda">&#x2715;</button>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <div style="min-width:150px">
+            <label class="form-label fw-semibold small mb-1">Alerta</label>
+            <select class="form-select form-select-sm" @bind="Vm.SelectedAlertLevel" @bind:after="HandleFilterChanged">
+                <option value="">Todas</option>
+                @foreach (var (value, label) in AlertLevelOptions)
+                {
+                    <option value="@value">@label</option>
+                }
+            </select>
+        </div>
+        <div style="min-width:170px">
+            <label class="form-label fw-semibold small mb-1">Inventario</label>
+            <select class="form-select form-select-sm" @bind="Vm.SelectedInventoryStatus" @bind:after="HandleFilterChanged">
+                <option value="">Todos</option>
+                @foreach (var (value, label) in InventoryStatusOptions)
+                {
+                    <option value="@value">@label</option>
+                }
+            </select>
+        </div>
     </div>
 </div>
 
@@ -28,7 +53,7 @@
 else
 {
     <div class="table-responsive purchase-table-wrapper">
-        <table class="table table-sm table-hover table-bordered align-middle mb-0">
+        <table class="table table-sm table-hover table-bordered align-middle mb-0 purchase-report-table">
             <thead class="table-dark">
                 <tr>
                     @SortHeader("SKU",          "sku",          "")
@@ -39,13 +64,13 @@ else
                     @SortHeader($"Ventas {Vm.WindowDays}d", "sales", "text-end")
                     @SortHeader("ABC",          "abc",          "text-center")
                     @SortHeader("XYZ",          "xyz",          "text-center")
-                    <th class="text-end">Cant/Emp</th>
-                    <th class="text-end">Paq.Sug.</th>
+                    <th class="text-end">Cant/Emp<span class="col-resize-handle"></span></th>
+                    <th class="text-end">Paq.Sug.<span class="col-resize-handle"></span></th>
                     @SortHeader("Cant.Sug.",    "suggestedqty", "text-end")
-                    <th>Motivo Compra</th>
+                    <th>Motivo Compra<span class="col-resize-handle"></span></th>
                     @SortHeader("Alerta",       "alert",       "text-center")
                     @SortHeader("Inventario",   "inventory",   "text-center")
-                    <th class="text-center">Revisión</th>
+                    <th class="text-center">Revisión<span class="col-resize-handle"></span></th>
                 </tr>
             </thead>
             <tbody>
@@ -56,8 +81,8 @@ else
                         @onclick="() => OnRowClick.InvokeAsync(item)">
                         <td><code class="text-nowrap">@item.Sku</code></td>
                         <td class="text-nowrap" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="@LegacyTextNormalizer.Normalize(item.Description)">@LegacyTextNormalizer.Normalize(item.Description)</td>
-                        <td>@LegacyTextNormalizer.Normalize(item.Family)</td>
-                        <td>@LegacyTextNormalizer.Normalize(item.SubFamily)</td>
+                        <td title="@LegacyTextNormalizer.Normalize(item.Family)">@LegacyTextNormalizer.Normalize(item.Family)</td>
+                        <td title="@LegacyTextNormalizer.Normalize(item.SubFamily)">@LegacyTextNormalizer.Normalize(item.SubFamily)</td>
                         <td class="text-end">@item.EffectiveStock.ToString("N2")</td>
                         <td class="text-end">@item.SalesPeriodQuantity.ToString("N2")</td>
                         <td class="text-center"><span class="badge bg-secondary">@item.Abc</span></td>
@@ -65,7 +90,7 @@ else
                         <td class="text-end">@item.UnitsPerPackage.ToString("N0")</td>
                         <td class="text-end">@item.SuggestedPackages.ToString("N0")</td>
                         <td class="text-end fw-bold @(item.HasSuggestion ? "text-primary" : "")">@item.SuggestedQuantity.ToString("N2")</td>
-                        <td><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.PurchaseReason)</small></td>
+                        <td title="@LegacyTextNormalizer.Normalize(item.PurchaseReason)"><small class="text-nowrap">@LegacyTextNormalizer.Normalize(item.PurchaseReason)</small></td>
                         <td class="text-center">
                             @if (!string.IsNullOrEmpty(item.AlertLevel))
                             {
